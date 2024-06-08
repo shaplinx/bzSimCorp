@@ -6,7 +6,8 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,.vue ."
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.13",
+    "autoprefixer": "^10.4.19",
+    "daisyui": "^4.12.2",
     "eslint": "^8.34.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
@@ -14,13 +15,23 @@
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-vue": "^9.9.0",
     "laravel-vite-plugin": "^0.7.2",
-    "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7",
-    "vite": "^4.0.0"
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "vite": "^4.0.0",
+    "vue-tsc": "^2.0.20"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vueuse/core": "^10.10.0",
+    "apexcharts": "^3.49.1",
+    "flatpickr": "^4.6.13",
+    "jsvectormap": "^1.5.3",
+    "pinia": "^2.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
     "vue": "^3.2.47",
-    "vue-loader": "^17.0.1"
+    "vue-loader": "^17.0.1",
+    "vue-router": "^4.3.2",
+    "vue3-apexcharts": "^1.5.3"
   }
 }

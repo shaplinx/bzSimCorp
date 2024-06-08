@@ -5,11 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vue 3 / Laravel 11 / Vite</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/ts/main.ts'])
 </head>
 
 <body>
-<p>Laravel Version: {{ app()->version() }}</p>
 <div id="app">
 </div>
 </body>
