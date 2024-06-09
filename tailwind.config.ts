@@ -15,6 +15,10 @@ module.exports = {
     },
     extend: {
       colors: {
+        "primary-focus" : "oklch(var(--pf) / <alpha-value>)",
+        "secondary-focus" : "oklch(var(--sf) / <alpha-value>)",
+        "accent-focus" : "oklch(var(--af) / <alpha-value>)",
+        "neutral-focus" : "oklch(var(--nf) / <alpha-value>)",
         current: 'currentColor',
         transparent: 'transparent',
         white: '#FFFFFF',
@@ -25,8 +29,6 @@ module.exports = {
         bodydark: '#AEB7C0',
         bodydark1: '#DEE4EE',
         bodydark2: '#8A99AF',
-        primary: '#3C50E0',
-        secondary: '#80CAEE',
         stroke: '#E2E8F0',
         gray: '#EFF4FB',
         graydark: '#333A48',
@@ -49,9 +51,6 @@ module.exports = {
         'meta-8': '#F0950C',
         'meta-9': '#E5E7EB',
         'meta-10': '#0FADCF',
-        success: '#219653',
-        danger: '#D34053',
-        warning: '#FFA70B'
       },
       fontSize: {
         'title-xxl': ['44px', '55px'],
@@ -309,5 +308,27 @@ module.exports = {
   },
   plugins: [
     require('daisyui'),
-  ]
+  ],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes").light,
+          "--pf": "42.12% 0.3096 275.75",
+          "--sf": "62.71% 0.224 342.55",
+          "--af": "67.7% 29 183.853",
+          "--nf": "25.4% 4.5 255.683",
+
+        },
+        dark: {
+          ...require("daisyui/src/theming/themes").dark,
+          "--pf": "60% 0.308 275.75",
+          "--sf": "54.2% 53.25 342",
+          "--af": "59.9% 25 186.112",
+          "--nf": "28.6% 4.5 251.895",
+
+        }
+      },
+    ],
+  },
 }
