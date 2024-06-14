@@ -9,7 +9,7 @@
 import MobileNav from '@/components/navs/MobileNav.vue';
 import DesktopNav from "@/components/navs/DesktopNav.vue"
 // import HeaderNav from "@/components/navs/HeaderNav.vue";
-import { faGaugeHigh, faUsers, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
+import { faGaugeHigh, faTable, faUsers, faPlusCircle} from "@fortawesome/free-solid-svg-icons";
 import { usePreferencesStore } from '@/stores/preferences';
 
 const preferences = usePreferencesStore();
@@ -22,8 +22,9 @@ const NavItems: Base.Component.Menu.MenuItem[] = [
     },
     {
         id: "user",
-        icon: faUsers,
-        label: "User",
+        icon: faTable,
+        label: "Data Table",
+        to: { name: "DataTable" },
         child: [
             {
                 id:"createUser",

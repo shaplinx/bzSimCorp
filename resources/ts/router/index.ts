@@ -9,7 +9,7 @@ import ECommerceView from '@/views/Dashboard/ECommerceView.vue'
 // import FormLayoutView from '@/views/Forms/FormLayoutView.vue'
 // import SettingsView from '@/views/Pages/SettingsView.vue'
 // import ProfileView from '@/views/ProfileView.vue'
-// import TablesView from '@/views/TablesView.vue'
+import DataTable from '@/views/DataTable/TablesView.vue'
 // import AlertsView from '@/views/UiElements/AlertsView.vue'
 // import ButtonsView from '@/views/UiElements/ButtonsView.vue'
 
@@ -21,6 +21,15 @@ const routes = [
         meta: {
             layout: 'DashboardLayout',
             title: 'eCommerce Dashboard',
+        }
+    },
+    {
+        path: '/data-table',
+        name: 'DataTable',
+        component: DataTable,
+        meta: {
+          layout: 'DashboardLayout',
+          title: 'Tables'
         }
     },
     //   {
@@ -59,15 +68,7 @@ const routes = [
     //       title: 'Form Layout'
     //     }
     //   },
-    //   {
-    //     path: '/tables',
-    //     name: 'tables',
-    //     component: TablesView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Tables'
-    //     }
-    //   },
+
     //   {
     //     path: '/pages/settings',
     //     name: 'settings',
