@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import HeaderArea from '@/components2/Header/HeaderArea.vue'
-import SidebarArea from '@/components2/Sidebar/SidebarArea.vue'
+import HeaderArea from './HeaderArea.vue'
+import SidebarArea from './SidebarArea.vue'
 </script>
 
 <template>

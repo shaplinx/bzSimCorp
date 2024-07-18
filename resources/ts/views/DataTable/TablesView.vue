@@ -1,21 +1,34 @@
 <template>
-    <Card variant="base" class="shadow-md">
-        <BaseTable v-model:selected="selected" :data="data" :fields="fields" striped hover select-mode="single">
-        </BaseTable>
-    </Card>
+        <DataTable
+            v-model:pagination="pagination"
+            class="shadow-md"
+            v-model:selected="selected"
+            :data="data"
+            :fields="fields"
+            select-mode="multiple" striped hover>
+        <template #header-id="{item}"> {{ item.label }} </template>
+        <template #item-id="{item}"> {{ item.id }} </template>
+
+        </DataTable>
+        {{ selected }}
 </template>
 <script setup lang="ts">
-import Card from "@/components/cards/Card.vue";
-import BaseTable from "@/components/tables/Table.vue"
-import {ref} from "vue"
-const fields = [
+import { TableField } from "@/components/@types/table";
+
+import DataTable from "@/components/tables/DataTable.vue";
+import {ref} from "vue";
+const fields : TableField[] = [
     {
         label: "ID",
-        value: "id"
+        value: "id",
+        sortable:true,
+        align:"center",
+        sortValue:"id",
+        unique:true
     },
     {
         label: "name",
-        value: "name"
+        value: "name",
     },
 ]
 
@@ -34,5 +47,14 @@ const data = [
     },
 ]
 
-const selected = ref([])
+const selected = ref([{
+        id: "1",
+        name: "Reza"
+    },])
+
+const pagination = ref({
+    total:3,
+    per_page:10,
+    page:1
+})
 </script>

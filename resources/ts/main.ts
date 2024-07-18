@@ -1,4 +1,4 @@
-import 'jsvectormap/dist/css/jsvectormap.min.css'
+import 'jsvectormap/dist/jsvectormap.min.css'
 import 'flatpickr/dist/flatpickr.min.css'
 import { createPinia } from "pinia"
 import { createApp } from 'vue'
@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome"
 import floatingVue from "floating-vue";
 import App from './App.vue'
 import router from './router'
+import form from "@/forms/initForms"
 
 const app = createApp(App);
 
@@ -20,5 +21,6 @@ app.use(floatingVue, {
         },
       },
 })
+app.use(form.plugin,form.config)
 app.component('FontAwesomeIcon',FontAwesomeIcon)
 app.mount('#app')

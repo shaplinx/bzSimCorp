@@ -10,6 +10,7 @@ import ECommerceView from '@/views/Dashboard/ECommerceView.vue'
 // import SettingsView from '@/views/Pages/SettingsView.vue'
 // import ProfileView from '@/views/ProfileView.vue'
 import DataTable from '@/views/DataTable/TablesView.vue'
+import FormShowcase from '@/views/Forms/FormShowcase.vue'
 // import AlertsView from '@/views/UiElements/AlertsView.vue'
 // import ButtonsView from '@/views/UiElements/ButtonsView.vue'
 
@@ -30,6 +31,15 @@ const routes = [
         meta: {
           layout: 'DashboardLayout',
           title: 'Tables'
+        }
+    },
+    {
+        path: '/forms',
+        name: 'FormShowcase',
+        component: FormShowcase,
+        meta: {
+          layout: 'DashboardLayout',
+          title: 'Form Showcase'
         }
     },
     //   {

@@ -1,23 +1,23 @@
 {
     "compilerOptions": {
-      "skipLibCheck": true,
-      "isolatedModules": true,
-      "target": "esnext",
-      "module": "esnext",
-      "allowJs":true,
-      "moduleResolution": "node",
-      "strict": true,
-      "jsx": "preserve",
-      "allowSyntheticDefaultImports": true,
-      "sourceMap": true,
-      "resolveJsonModule": true,
-      "esModuleInterop": true,
-      "lib": ["esnext", "dom"],
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["./resources/ts/*"],
-        "~/*": ["./resources/ts/*"]
-      }
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "target": "esnext",
+        "module": "esnext",
+        "allowJs":true,
+        "moduleResolution": "node",
+        "strict": true,
+        "jsx": "preserve",
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "lib": ["esnext", "dom"],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./resources/ts/*"],
+            "~/*": ["./resources/ts/*"]
+        }
     },
     "include": ["resources/ts/**/*.ts", "resources/ts/**/*.d.ts", "resources/ts/**/*.tsx", "resources/ts/**/*.vue", "resources/ts/hooks/tailwind/mediaQuerry.js"],
     "exclude": ["node_modules", ".github", ".history", "dist"]

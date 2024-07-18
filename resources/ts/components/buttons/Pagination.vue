@@ -1,17 +1,24 @@
 <template>
-    <div class="flex flex-col justify-center items-center">
+    <div class="flex items-center"
+    :class="[
+        !position || position === 'center' ? 'flex-col justify-start' : '',
+        {
+            'flex-row gap-2 justify-start': position === 'left',
+            'flex-row-reverse gap-2 justify-start': position === 'right'
+        }
+    ]">
     <div class="flex gap-1">
-        <Button v-if="page > 1 && page <= total_page" @click="$emit('update:page', page-1)">
+        <Button :size="buttonSize" v-if="page > 1 && page <= total_page" @click="$emit('update:page', page-1)">
             <font-awesome-icon :icon="faChevronLeft"></font-awesome-icon>
         </Button>
         <ButtonGroupInput :model-value="page" @update:modelValue="(val) => $emit('update:page', val)"
             :buttons="buttons">
         </ButtonGroupInput>
-        <Button v-if="page < total_page && page >= 1" @click="$emit('update:page', page+1)">
+        <Button :size="buttonSize" v-if="page < total_page && page >= 1" @click="$emit('update:page', page+1)">
             <font-awesome-icon :icon="faChevronRight"></font-awesome-icon>
         </Button>
     </div>
-    <span class="my-1 text-sm"> {{ currentRange }} dari {{ total }}</span>
+    <span class="my-1 text-xs"> {{ currentRange }} from {{ total }}</span>
     </div>
 
 </template>
@@ -22,10 +29,13 @@ import ButtonGroupInput from "./ButtonGroupInput.vue"
 import { computed } from "vue"
 import Button from "./Button.vue";
 
+
 const props = defineProps<{
     page: number,
     per_page: number,
-    total: number
+    total: number,
+    buttonSize?: "xs" | "md" | "lg" | "sm",
+    position?: "center" | "left" | "right"
 }>()
 
 const total_page = computed(() => {
@@ -46,6 +56,7 @@ const buttons = computed((): ButtonProps[] => {
                 shape: "square",
                 variant: "primary",
                 value: key + 1,
+                size: props.buttonSize
             }
         })
     }
@@ -61,6 +72,7 @@ const buttons = computed((): ButtonProps[] => {
                 shape: "square",
                 variant: "primary",
                 value: val,
+                size: props.buttonSize
             }
         } else {
             prev = val
@@ -68,13 +80,16 @@ const buttons = computed((): ButtonProps[] => {
                 {
                     label: "...",
                     disabled: true,
-                    shape: "square"
+                    shape: "square",
+                    size: props.buttonSize
+
                 },
                 {
                     label: (val).toString(),
                     shape: "square",
                     variant: "primary",
                     value: val,
+                    size: props.buttonSize
                 }
             ]
         }

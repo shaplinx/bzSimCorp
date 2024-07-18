@@ -1,0 +1,25 @@
+<template>
+    <div class="vue-select-container">
+        <v-select @option:selected="handleSelected" :value="{label:'ASUUUU'}" v-bind="props.context?.attrs"></v-select>
+    </div>
+</template>
+<script setup lang="ts">
+import vSelect from 'vue-select'
+import { FormKitFrameworkContext } from '@formkit/core';
+import { PropType } from 'vue';
+
+const props = defineProps({
+  context: Object as PropType<FormKitFrameworkContext>,
+})
+
+const handleSelected = (val:any) => {
+    props.context?.node.input(val)
+}
+
+
+</script>
+<style>
+.vue-select-container {
+    width: 100%;
+}
+</style>

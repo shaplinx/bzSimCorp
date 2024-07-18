@@ -34,17 +34,18 @@
 </template>
 
 <script setup lang="ts">
-import debounce from "lodash/debounce"
+import {debounce} from "@/@hooks/misc/debounce"
 import { ref, defineProps, onUnmounted } from "vue";
 import SpinnerOverlay from "../loader/SpinnerOverlay.vue";
 
-defineProps([
+const props = defineProps([
   "items",
   "labelKey",
   "valueKey",
   "searchPlaceholder",
   "classes",
   "modelValue",
+  "debounce"
 ]);
 const emits = defineEmits(["update:modelValue", "selected", "search"]);
 
@@ -83,7 +84,7 @@ const onSearchChange = debounce((search: string) => {
   emits("update:modelValue", search);
   emits("search", search, loading, setOptions);
   setOpenOptions(true);
-}, 500);
+}, props.debounce);
 document.addEventListener("click", () => setOpenOptions(false));
 
 onUnmounted(() => {

@@ -21,12 +21,17 @@
     "vue-tsc": "^2.0.20"
   },
   "dependencies": {
+    "@formkit/addons": "^1.6.5",
+    "@formkit/themes": "^1.6.5",
+    "@formkit/vue": "^1.6.5",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vueform/multiselect": "^2.6.8",
+    "@vuepic/vue-datepicker": "^9.0.0",
     "@vueuse/components": "^10.10.0",
     "@vueuse/core": "^10.10.0",
     "apexcharts": "^3.49.1",
