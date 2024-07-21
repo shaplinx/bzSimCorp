@@ -11,9 +11,18 @@
 |
 */
 
-$app = new Illuminate\Foundation\Application(
-    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
-);
+$app = Illuminate\Foundation\Application::configure($_ENV['APP_BASE_PATH'] ?? dirname(__DIR__))
+    ->withMiddleware(function (Illuminate\Foundation\Configuration\Middleware $middleware) {
+        $middleware->statefulApi();
+        $middleware->redirectUsersTo(function (Illuminate\Http\Request $request) {
+            if ($request->expectsJson()) {
+                throw new \App\Exceptions\AlreadyAuthenticatedException();
+            }
+
+            return '/';
+        });
+    })
+    ->create();
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +49,8 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+
 
 /*
 |--------------------------------------------------------------------------

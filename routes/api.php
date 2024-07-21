@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\API\V1\Auth\TokenBasedAuth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,8 +12,19 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "api" middleware group. Make something great!
 |
-*/
+ */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix("v1")->group(function () {
+    Route::post('auth/login', \App\Http\Controllers\API\V1\Auth\LoginController::class)->middleware('guest');
+    Route::post('auth/create-token',  [TokenBasedAuth::class, 'createToken'])->middleware('guest');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('auth/user', App\Http\Controllers\API\V1\Auth\GetCurrentUser::class);
+        Route::post('auth/logout', App\Http\Controllers\API\V1\Auth\LogoutController::class);
+        Route::post('auth/revoke-token', [TokenBasedAuth::class, 'revokeToken']);
+
+        Route::resource('user', App\Http\Controllers\API\V1\UserController::class);
+    });
+
+
 });
