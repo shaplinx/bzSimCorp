@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "24cffb13a70e9a826e980bcca51c0c57",
+    "content-hash": "2e0986729a45add6a1dff03467a3bc43",
     "packages": [
         {
             "name": "brick/math",
@@ -500,6 +500,64 @@
                 }
             ],
             "time": "2023-10-06T06:47:41+00:00"
+        },
+        {
+            "name": "eneadm/ladder",
+            "version": "v1.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/eneadm/ladder.git",
+                "reference": "e0880ea932b06e8c20f22e5ce60f9174171d762b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/eneadm/ladder/zipball/e0880ea932b06e8c20f22e5ce60f9174171d762b",
+                "reference": "e0880ea932b06e8c20f22e5ce60f9174171d762b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/framework": "^10.0|^11.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^8.0|^9.0",
+                "phpunit/phpunit": "^9.0|^10.5|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ladder\\LadderServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ladder\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Enea Dhiamandi",
+                    "email": "enea@dhiamandi.com"
+                }
+            ],
+            "description": "Feather light permissions for Laravel.",
+            "keywords": [
+                "permissions",
+                "roles"
+            ],
+            "support": {
+                "issues": "https://github.com/eneadm/ladder/issues",
+                "source": "https://github.com/eneadm/ladder"
+            },
+            "time": "2024-03-18T10:49:10+00:00"
         },
         {
             "name": "fruitcake/php-cors",

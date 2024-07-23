@@ -13,7 +13,7 @@ class GetCurrentUser extends ApiController
     public function __invoke(Request $request)
     {
         return $this->sendResponse(__("Fetched Successfully"), [
-            "user"=> $request->user()
+            "user"=> $request->user()->append(["allPermissions"])
         ]);
     }
 }
