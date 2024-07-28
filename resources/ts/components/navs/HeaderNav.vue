@@ -1,7 +1,7 @@
 <template>
-    <div class="navbar bg-base-100 align-middle justify-between border-b-2  border-primary">
-        <!-- <BreadCrumbs class="ml-4 mr-auto" /> -->
-        <ThemeSelector v-model="theme" class="ml-auto mr-2" />
+    <div class="navbar bg-base-100 align-middle justify-between border-b-2 gap-2 border-primary">
+        <BreadCrumbs class="mr-auto ml-2"/>
+        <ThemeSelector v-model="theme"/>
         <DropdownMenu>
             <Button variant="ghost" square>
                 <FontAwesomeIcon :icon="faEllipsis" />
@@ -29,6 +29,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import DropdownMenu from "../dropdowns/DropdownMenu.vue";
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from "vue-router";
+import BreadCrumbs from "./BreadCrumbs.vue";
 
 
 const {logout} = useAuthStore()

@@ -19,12 +19,11 @@
                 <slot v-else :name="`item-${field.value}`" :item="item" />
             </template>
         </Table>
-        <div class="flex items-center w-full justify-between px-3">
+        <div class="flex items-center w-full justify-between gap-2 px-3">
             <div class="label">
-    <span class="label-text">Pick the best fantasy franchise</span>
-    <span class="label-text-alt">Alt label</span>
+    <span class="label-text">Shows per page</span>
   </div>
-            <select v-model="pagination.per_page" class="select select-bordered select-sm w-full max-w-20">
+            <select v-model="pagination.per_page" class="select mr-auto select-bordered select-sm w-full max-w-20">
                 <option v-for="(page,i) in [10,15,20,25]" :value="page" :selected="i=== 0"> {{ page }}</option>
             </select>
         <Pagination v-if="pagination.page && pagination.per_page && pagination.total"

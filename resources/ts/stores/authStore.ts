@@ -6,6 +6,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 export const useAuthStore = defineStore('sidebar', () => {
     const user = ref<{ id?: number, [key: string]: any }>({})
     const isAuthenticated = ref(false)
+    const attemptCount = ref(0)
 
     const login = (credentials: { email: string, password: string }) => {
         return new Promise((resolve,reject) => {
@@ -36,7 +37,7 @@ export const useAuthStore = defineStore('sidebar', () => {
     }
 
     function attempt() {
-
+        attemptCount.value++
         return new Promise((resolve,reject) => {
             return axios.get("/auth/user")
             .then(( res :AxiosResponse) => {
@@ -55,6 +56,7 @@ export const useAuthStore = defineStore('sidebar', () => {
         user,
         login,
         attempt,
-        logout
+        logout,
+        attemptCount
     }
 })

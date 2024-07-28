@@ -95,4 +95,11 @@ export default [
         label: 'Textarea',
         $formkit: 'textarea',
     },
+    {
+        name: 'submit',
+        label: 'Submit',
+        variant:'primary',
+        block: true,
+        $formkit: 'submit',
+    },
 ] as FormKitSchemaDefinition

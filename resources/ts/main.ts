@@ -22,7 +22,7 @@ app.use(floatingVue, {
         },
       },
 })
-app.use(Vue3Toastify, {theme: "colored", position:"bottom-right"})
+app.use(Vue3Toastify, {theme: "colored", position:"bottom-right", clearOnUrlChange:false})
 app.use(form.plugin,form.config)
 app.component('FontAwesomeIcon',FontAwesomeIcon)
 app.mount('#app')

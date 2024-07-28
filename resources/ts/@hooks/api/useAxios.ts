@@ -1,8 +1,7 @@
 import axios from "axios";
 import {useAuthStore} from "@/stores/authStore"
 import { toast } from 'vue3-toastify';
-import { useRouter } from "vue-router";
-
+import router from "@/router";
 const axiosInstance = axios.create({
     baseURL: "/api/v1/",
     withCredentials: true,
@@ -64,14 +63,16 @@ axiosInstance.interceptors.response.use(
                     .finally(()=>toast.done(loadingToast))
             })
         }
-        const router = useRouter()
+        //const router = useRouter()
 
         if (error.response?.status === 401) {
             const authStore = useAuthStore()
-            authStore.setUser({})
-            authStore.setAuthenticated(false)
-            router.push({name:"signin"})
+            authStore.user = {}
+            authStore.isAuthenticated = false
+            router.push({name:"SignIn"})
         }
+
+
 
         // Handle other errors
         return Promise.reject(error);

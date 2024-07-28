@@ -24,12 +24,13 @@ const NavItems: Base.Component.Menu.MenuItem[] = [
         id: "user",
         icon: faTable,
         label: "Data Table",
-        to: { name: "DataTable" },
+        to: { name: "DataTableindex" },
         child: [
             {
                 id:"createUser",
                 icon: faPlusCircle,
-                label:"Create"
+                label:"Create User",
+                to:{name:"CreateUser"}
             }
         ]
     },

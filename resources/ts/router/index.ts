@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, RouterView } from 'vue-router'
 import { useAuthStore } from "@/stores/authStore"
 
 
@@ -6,43 +6,80 @@ import SigninView from '@/views/Authentication/SigninView.vue'
 // import SignupView from '@/views/Authentication/SignupView.vue'
 // import CalendarView from '@/views/CalendarView.vue'
 // import BasicChartView from '@/views/Charts/BasicChartView.vue'
-import ECommerceView from '@/views/Dashboard/ECommerceView.vue'
 // import FormElementsView from '@/views/Forms/FormElementsView.vue'
 // import FormLayoutView from '@/views/Forms/FormLayoutView.vue'
 // import SettingsView from '@/views/Pages/SettingsView.vue'
 // import ProfileView from '@/views/ProfileView.vue'
 import DataTable from '@/views/DataTable/TablesView.vue'
 import FormShowcase from '@/views/Forms/FormShowcase.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 // import AlertsView from '@/views/UiElements/AlertsView.vue'
 // import ButtonsView from '@/views/UiElements/ButtonsView.vue'
 
 const routes = [
     {
+        path: '/auth/signin',
+        name: 'SignIn',
+        component: SigninView,
+        meta: {
+            title: 'Sign In'
+        }
+    },
+    {
         path: '/',
-        name: 'Dashboard',
-        component: ECommerceView,
+        name: 'Root',
+        component: DashboardLayout,
+        redirect: "/dashboard",
         meta: {
-            layout: 'DashboardLayout',
-            title: 'eCommerce Dashboard',
-        }
-    },
-    {
-        path: '/data-table',
-        name: 'DataTable',
-        component: DataTable,
-        meta: {
-            layout: 'DashboardLayout',
-            title: 'Tables'
-        }
-    },
-    {
-        path: '/forms',
-        name: 'FormShowcase',
-        component: FormShowcase,
-        meta: {
-            layout: 'DashboardLayout',
-            title: 'Form Showcase'
-        }
+            title: 'Root',
+        },
+        children: [
+            {
+                path:"dashboard",
+                component: () => import("@/views/Dashboard/ECommerceView.vue"),
+                name:"Dashboard",
+                meta: {
+                    title: 'Dashboard'
+                }
+            },
+            {
+                path: 'data-table',
+                name: 'DataTable',
+                component: RouterView,
+                redirect:"/data-table/index",
+                meta: {
+                    title: 'Tables'
+                },
+                children:[
+                    {
+                        path: 'index',
+                        name: 'DataTableindex',
+                        component: () => import("@/views/DataTable/TablesView.vue"),
+                        meta: {
+                            layout: 'DashboardLayout',
+                            title: 'Tables Index'
+                        }
+                    },
+                    {
+                        path: 'create',
+                        name: 'CreateUser',
+                        component: () => import('@/views/User/CreateUser.vue'),
+                        meta: {
+                            layout: 'DashboardLayout',
+                            title: 'Create User'
+                        }
+                    },
+                ]
+            },
+            {
+                path: '/forms',
+                name: 'FormShowcase',
+                component: FormShowcase,
+                meta: {
+                    title: 'Form Showcase'
+                }
+            },
+        ]
     },
     //   {
     //     path: '/calendar',
@@ -117,15 +154,7 @@ const routes = [
     //       title: 'Buttons'
     //     }
     //   },
-    {
-        path: '/auth/signin',
-        name: 'signin',
-        component: SigninView,
-        meta: {
-            layout: 'DefaultLayout',
-            title: 'Signin'
-        }
-    },
+
     //   {
     //     path: '/auth/signup',
     //     name: 'signup',
@@ -146,24 +175,21 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-    document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
+    document.title = `${to.meta.title} | Bellza Admin`
     const authStore = useAuthStore()
-    const isUserExists = Object.keys(authStore.user).length !== 0
-    if (to.name === "signin") {
-        if (authStore.isAuthenticated && isUserExists) {
-            return next({ name: "Dashboard" })
+    if (authStore.attemptCount === 0) {
+        await authStore.attempt()
+    }
+    if(authStore.isAuthenticated){
+        if (to.name !== "SignIn" ) {
+            return next()
         }
-        return authStore.attempt()
-            .then(() => next({ name: "Dashboard" }))
-            .catch(() => next())
+        return next({ name: "Dashboard" })
     }
-    if (authStore.isAuthenticated && isUserExists) {
-        return next()
+    if (to.name !== "SignIn" ) {
+        return ({ name: "SignIn" })
     }
-    return authStore.attempt()
-        .then(() => next())
-        .catch(() => next({ name: "signin" }))
-
+    return next()
 })
 
 export default router

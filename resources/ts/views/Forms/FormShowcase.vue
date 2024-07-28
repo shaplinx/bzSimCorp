@@ -28,7 +28,7 @@ const schema =[
             <CardTitle>
                 Forms Showcase
             </CardTitle>
-            <FormKit type="form" v-model="data" >
+            <FormKit type="form" v-model="data" :actions="false" >
                 <FormKitSchema :schema="formShowcase" :data="data" />
             </FormKit>
         </CardBody>

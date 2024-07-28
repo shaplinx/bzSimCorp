@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 import { getNode } from '@formkit/core'
 
 const router = useRouter();
+
 const pageTitle = ref('Sign In')
 
 const loginForm = reactive({
