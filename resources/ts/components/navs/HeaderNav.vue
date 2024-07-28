@@ -12,7 +12,7 @@
                 </li>
 
                 <li>
-                    <a v-close-popper >Log Out</a>
+                    <a v-close-popper @click="onLogout">Log Out</a>
                 </li>
             </template>
         </DropdownMenu>
@@ -27,6 +27,16 @@ import ThemeSelector from "@/components/inputs/ThemeSelector.vue";
 import Button from "../buttons/Button.vue";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import DropdownMenu from "../dropdowns/DropdownMenu.vue";
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from "vue-router";
+
+
+const {logout} = useAuthStore()
+const router = useRouter()
+
+function onLogout() {
+    logout().then(()=> router.push({name:"signin"}))
+}
 
 
 const preferences = usePreferencesStore();

@@ -1,5 +1,5 @@
 <template>
-  <Button v-bind="context?.attrs" :label="context?.attrs.buttonLabel" />
+  <Button v-bind="context?.attrs" :label="context?.label" />
 </template>
 <script setup lang="ts">
 

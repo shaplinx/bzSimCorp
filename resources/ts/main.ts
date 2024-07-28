@@ -5,6 +5,7 @@ import { createApp } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome"
 import floatingVue from "floating-vue";
+import Vue3Toastify from 'vue3-toastify';
 import App from './App.vue'
 import router from './router'
 import form from "@/forms/initForms"
@@ -21,6 +22,7 @@ app.use(floatingVue, {
         },
       },
 })
+app.use(Vue3Toastify, {theme: "colored", position:"bottom-right"})
 app.use(form.plugin,form.config)
 app.component('FontAwesomeIcon',FontAwesomeIcon)
 app.mount('#app')

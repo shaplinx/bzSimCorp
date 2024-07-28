@@ -2,7 +2,7 @@
 @import "./satoshi.css";
 @import "floating-vue/dist/style.css";
 @import "./datatable.css";
-
+@import "./toastify.css";
 
 .v-popper--theme-dropdown .v-popper__inner {
     background: hsl(var(--b1));

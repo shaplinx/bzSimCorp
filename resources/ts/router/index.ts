@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from "@/stores/authStore"
+
 
 import SigninView from '@/views/Authentication/SigninView.vue'
 // import SignupView from '@/views/Authentication/SignupView.vue'
@@ -29,8 +31,8 @@ const routes = [
         name: 'DataTable',
         component: DataTable,
         meta: {
-          layout: 'DashboardLayout',
-          title: 'Tables'
+            layout: 'DashboardLayout',
+            title: 'Tables'
         }
     },
     {
@@ -38,8 +40,8 @@ const routes = [
         name: 'FormShowcase',
         component: FormShowcase,
         meta: {
-          layout: 'DashboardLayout',
-          title: 'Form Showcase'
+            layout: 'DashboardLayout',
+            title: 'Form Showcase'
         }
     },
     //   {
@@ -143,9 +145,25 @@ const router = createRouter({
     }
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     document.title = `Vue.js ${to.meta.title} | TailAdmin - Vue.js Tailwind CSS Dashboard Template`
-    next()
+    const authStore = useAuthStore()
+    const isUserExists = Object.keys(authStore.user).length !== 0
+    if (to.name === "signin") {
+        if (authStore.isAuthenticated && isUserExists) {
+            return next({ name: "Dashboard" })
+        }
+        return authStore.attempt()
+            .then(() => next({ name: "Dashboard" }))
+            .catch(() => next())
+    }
+    if (authStore.isAuthenticated && isUserExists) {
+        return next()
+    }
+    return authStore.attempt()
+        .then(() => next())
+        .catch(() => next({ name: "signin" }))
+
 })
 
 export default router

@@ -1,0 +1,60 @@
+import { defineStore } from 'pinia'
+import { computed, reactive, ref } from 'vue'
+import axios from '@/@hooks/api/useAxios'
+import { AxiosError, AxiosResponse } from 'axios'
+
+export const useAuthStore = defineStore('sidebar', () => {
+    const user = ref<{ id?: number, [key: string]: any }>({})
+    const isAuthenticated = ref(false)
+
+    const login = (credentials: { email: string, password: string }) => {
+        return new Promise((resolve,reject) => {
+            return axios.post('/auth/login', credentials)
+            .then(( res :AxiosResponse) => {
+                isAuthenticated.value =true
+                resolve(res)
+            })
+            .catch((err : AxiosError) => {
+                reject(err)
+            })
+        })
+
+    }
+
+    function logout() {
+        return new Promise((resolve,reject) => {
+            return axios.post('/auth/logout')
+            .then(( res :AxiosResponse) => {
+                isAuthenticated.value =false
+                user.value= {}
+                resolve(res)
+            })
+            .catch((err : AxiosError) => {
+                reject(err)
+            })
+        })
+    }
+
+    function attempt() {
+
+        return new Promise((resolve,reject) => {
+            return axios.get("/auth/user")
+            .then(( res :AxiosResponse) => {
+                user.value= res.data.data.user
+                isAuthenticated.value =true
+                resolve(res)
+            })
+            .catch((err : AxiosError) => {
+                reject(err)
+            })
+        })
+    }
+
+    return {
+        isAuthenticated,
+        user,
+        login,
+        attempt,
+        logout
+    }
+})

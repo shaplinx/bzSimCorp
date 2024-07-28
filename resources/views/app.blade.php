@@ -8,7 +8,7 @@
     @vite(['resources/css/app.css', 'resources/ts/main.ts'])
 </head>
 
-<body class="bg-base-200">
+<body class="bg-base-200 font-satoshi">
 <div id="app">
 </div>
 </body>

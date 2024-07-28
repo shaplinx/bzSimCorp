@@ -1,11 +1,12 @@
 import defaultTheme from 'tailwindcss/defaultTheme'
+import formKitTailwind from '@formkit/themes/tailwindcss';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./resources/**/*.blade.php', './resources/**/*.ts', './resources/**/*.vue'],
   theme: {
     fontFamily: {
-      satoshi: ['Satoshi', 'sans-serif']
+      satoshi: ['Satoshi']
     },
     screens: {
       '2xsm': '375px',
@@ -308,6 +309,7 @@ module.exports = {
   },
   plugins: [
     require('daisyui'),
+    formKitTailwind
   ],
   daisyui: {
     themes: [

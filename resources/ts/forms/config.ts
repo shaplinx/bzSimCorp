@@ -3,7 +3,7 @@ import {
     type DefaultConfigOptions,
     bindings
 } from "@formkit/vue";
-import { createLibraryPlugin, text, form,color ,radio ,submit, number,month,week, date, datetimeLocal, file, group, hidden, password, range, search, select, tel, textarea, time, url,checkbox, email } from '@formkit/inputs'
+import { createLibraryPlugin, text, form,color ,radio, number,month,week, date, datetimeLocal, file, group, hidden, password, range, search, select, tel, textarea, time, url,checkbox, email } from '@formkit/inputs'
 import { createAutoAnimatePlugin } from "@formkit/addons";
 import vSelect from "./plugins/vueselect/VueSelect.vue";
 import VButtonVue from "./plugins/vbutton/VButton.vue";
@@ -16,24 +16,29 @@ import Toggle from "./plugins/toggle/Toggle.vue";
 import theme from "./theme"
 
 
-const defaultInputsLib = createLibraryPlugin({ text,radio,color, form,month,week ,submit, number, date, datetimeLocal, file, group, hidden, password, range, search, select, tel, textarea,checkbox, time, url, email, })
+const defaultInputsLib = createLibraryPlugin({ text,radio,color, form,month,week, number, date, datetimeLocal, file, group, hidden, password, range, search, select, tel, textarea,checkbox, time, url, email, })
+
+const addOnsInputLib = createLibraryPlugin({
+    vRepeater: repeater,
+    vSelect: createInput(vSelect),
+    autoSuggest: createInput(AutoSuggest, { props: ["onSearch"] }),
+    button: {
+        type: "input",
+        component: VButtonVue,
+    },
+    submit: {
+        type: "input",
+        component: VButtonVue,
+    },
+    toggle: createInput(Toggle),
+    datepicker: createInput(VueDatepickerVue),
+    radioButton:createInput(RadioButton)
+})
 
 const formkitConfig = {
-    plugins: [defaultInputsLib, createAutoAnimatePlugin(), bindings],
+    plugins: [defaultInputsLib, createAutoAnimatePlugin(), bindings, addOnsInputLib],
     config: {
         classes: generateClasses(theme),
-    },
-    inputs: {
-        vRepeater: repeater,
-        vSelect: createInput(vSelect),
-        autoSuggest: createInput(AutoSuggest, { props: ["onSearch"] }),
-        vButton: {
-            type: "input",
-            component: VButtonVue,
-        },
-        toggle: createInput(Toggle),
-        datepicker: createInput(VueDatepickerVue),
-        radioButton:createInput(RadioButton)
     },
 } satisfies DefaultConfigOptions;
 
