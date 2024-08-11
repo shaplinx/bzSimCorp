@@ -17,7 +17,7 @@
         <div class="flex align-middle justify-between gap-3">
             <LoadingVue v-show="finalLoading" :size="size"></LoadingVue>
             <span class="my-auto">
-                <font-awesome-icon v-if="icon" :icon="icon" :class="shape ? '': 'mr-2'"></font-awesome-icon>
+                <font-awesome-icon v-show="!finalLoading" v-if="icon" :icon="icon" :class="shape ? '': 'mr-2'"></font-awesome-icon>
                 <slot name="default" :props="props"  v-if="showContent">
                     {{ props.label }}
                 </slot>

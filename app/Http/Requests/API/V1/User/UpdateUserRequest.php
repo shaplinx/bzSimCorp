@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Validation\Rule;
+use Ladder\Ladder;
+
 
 class UpdateUserRequest extends StoreUserRequest
 {
@@ -28,11 +30,13 @@ class UpdateUserRequest extends StoreUserRequest
         $rules = [
             "name" => ["required", "string"],
             "email" => ["required", "email", Rule::unique('users')->ignore($this->user->id)],
-            "password" => [ $this->passwordCriteria(), "confirmed"],
-            "password_confirmation" => ["required_with:password"],
+            "password" => [ "sometimes", $this->passwordCriteria(), "confirmed"],
+            "password_confirmation" => ["sometimes","required_with:password"],
+            "roles" => "sometimes|required|array",
+            "roles.*" => "sometimes|required_with:roles|in:". implode(',', collect(array_values(Ladder::$roles))->pluck("key")->all())
         ];
 
-        if ($this->user()->id === $this->user->id) $rules['old_password'] = ["required_with:password", "current_password"];
+        if ($this->user()->id === $this->user->id) $rules['old_password'] = ["sometimes","required_with:password", "current_password"];
 
         return $rules;
     }

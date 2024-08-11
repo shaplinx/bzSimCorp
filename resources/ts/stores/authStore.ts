@@ -51,12 +51,21 @@ export const useAuthStore = defineStore('sidebar', () => {
         })
     }
 
+    function getCsrfToken() {
+        return new Promise((resolve, reject) => {
+            axios.get("/api/csrf-cookie", { baseURL: "/" })
+                .then(res => resolve(res))
+                .catch(err => reject(err))
+        })
+    }
+
     return {
         isAuthenticated,
         user,
         login,
         attempt,
         logout,
-        attemptCount
+        attemptCount,
+        getCsrfToken
     }
 })

@@ -2,7 +2,7 @@
     <div class="navbar bg-base-100 align-middle justify-between border-b-2 gap-2 border-primary">
         <BreadCrumbs class="mr-auto ml-2"/>
         <ThemeSelector v-model="theme"/>
-        <DropdownMenu>
+        <DropdownMenu placement="bottom-end">
             <Button variant="ghost" square>
                 <FontAwesomeIcon :icon="faEllipsis" />
             </Button>
@@ -36,7 +36,7 @@ const {logout} = useAuthStore()
 const router = useRouter()
 
 function onLogout() {
-    logout().then(()=> router.push({name:"signin"}))
+    logout().then(()=> router.push({name:"SignIn"}))
 }
 
 

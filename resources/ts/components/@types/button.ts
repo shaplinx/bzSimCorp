@@ -17,4 +17,5 @@ export type ButtonProps = {
     tag?: 'button' | 'a' | 'input',
     onClick?: (e: MouseEvent) => any,
     value?:any,
+    on?: any
 }

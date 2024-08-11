@@ -1,3 +1,4 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { BaseColor, ClassesPairs } from "./../daisy.d";
 export type DropdownImageMode =
   | "top"
@@ -10,7 +11,8 @@ export type DropdownColor = BaseColor;
 declare interface DropdownOption {
   value?: any;
   label?: string;
-  icon?: string;
+  disabled?:boolean;
+  icon?: string | IconDefinition;
   action?: Function;
   [key: string]: any
 }

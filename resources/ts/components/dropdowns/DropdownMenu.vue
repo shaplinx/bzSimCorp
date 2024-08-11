@@ -6,10 +6,12 @@
       <DropdownMenuContent class="gap-1">
         <slot name="popper" :option="props.options" :hide="hide">
           <li
-            @click="option.action ? option.action(id ?? option) : () => {}"
+            @click="()=> onMenuClick(option,hide)"
             v-for="option in props.options"
-            v-close-popper
-            :class="props.activeKey === option.value && activeClass ? activeClass : ''"
+            :class="[
+                props.activeKey === option.value && activeClass ? activeClass : '',
+                {'disabled' : option.disabled}
+                ]"
           >
             <a
               ><FontAwesomeIcon v-if="option.icon" :icon="option.icon"></FontAwesomeIcon
@@ -37,7 +39,14 @@ const props = withDefaults(
   }>(),
   { labelkey: "label" }
 );
+
+function onMenuClick(option : DropdownOption, hide : any ) {
+    if (option.disabled) return
+    option.action?.(props.id)
+    hide()
+}
 </script>
+
 
 <style scoped>
 .v-popper--theme-dropdown .v-popper__inner {

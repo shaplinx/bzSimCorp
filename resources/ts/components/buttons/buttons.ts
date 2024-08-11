@@ -31,6 +31,7 @@ export interface ButtonProp {
   active?: boolean;
   value?: Number | string;
   onClick?: Function;
+  on?: any
 }
 
 export type ButtonGroupMode = "vertical" | "horizontal";

@@ -19,7 +19,8 @@ const loginForm = reactive({
 
 const {
     login,
-    attempt
+    attempt,
+    getCsrfToken
 } = useAuthStore();
 
 
@@ -29,12 +30,32 @@ const loggingIn = ref(false)
 async function submitLogin(credentials: { email: string, password: string }) {
     const formNode = getNode("loginForm")
     loggingIn.value = true
-    await login(credentials)
-        .then(() => attempt().then(()=> router.push({name:"Dashboard"})))
-        .catch(err =>{
-            formNode?.setErrors(err.response?.data?.message, err.response?.data?.errors || {})
-        })
-        .finally(()=> loggingIn.value = false)
+
+    return new Promise((resolve,reject) => {
+        getCsrfToken()
+            .then(()=> {
+                login(credentials)
+                    .then(() => {
+                        attempt()
+                            .then((res)=> {
+                                resolve(res)
+                                router.push({name:"Dashboard"})
+                            })
+                            .catch(reject)
+                            .finally(()=> loggingIn.value = false)
+                    })
+                    .catch((err)=> {
+                        reject(err)
+                        formNode?.setErrors(err.response?.data?.message, err.response?.data?.errors || {})
+                        loggingIn.value = false
+                    })
+            })
+            .catch((err) => {
+                reject(err)
+                loggingIn.value = false
+            })
+    })
+
 }
 
 

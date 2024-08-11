@@ -38,5 +38,6 @@ class LadderServiceProvider extends ServiceProvider
         Ladder::role('standard', 'Standard', [
             'user:read',
         ])->description('Standard users have the ability to read user.');
+
     }
 }

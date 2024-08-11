@@ -9,6 +9,7 @@ use App\Http\Requests\API\V1\IndexRequest;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\API\V1\User\StoreUserRequest;
 use App\Http\Requests\API\V1\User\UpdateUserRequest;
+use Illuminate\Support\Facades\DB;
 
 
 class UserController extends ApiController
@@ -31,7 +32,7 @@ class UserController extends ApiController
                 $orderBy = explode('|',$orderBy);
                 $query->orderBy($orderBy[0],$orderBy[1]);
             })
-            ->paginate($request->per_page ?? 10)
+            ->paginate($request->pageSize ?? 10)
         );
     }
 
@@ -40,7 +41,12 @@ class UserController extends ApiController
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->all());
+       $user = DB::transaction(function () use($request) {
+            $user = User::create($request->all());
+            $user->setRoles($request->roles);
+            return $user->refresh();
+        });
+
         return $this->sendResponse(__("Created Successfully"),$user);
 
     }
@@ -59,7 +65,12 @@ class UserController extends ApiController
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->update($request->all());
+        $user = DB::transaction(function () use($request, $user) {
+            $user->update($request->all());
+            $user->setRoles($request->roles);
+            return $user->refresh();
+        });
+
         return $this->sendResponse(__("Updated Successfully"),$user);
     }
 

@@ -53,11 +53,11 @@ const routes = [
                 children:[
                     {
                         path: 'index',
-                        name: 'DataTableindex',
+                        name: 'UserIndex',
                         component: () => import("@/views/DataTable/TablesView.vue"),
                         meta: {
                             layout: 'DashboardLayout',
-                            title: 'Tables Index'
+                            title: 'Users Index / CRUD Demo'
                         }
                     },
                     {
@@ -67,6 +67,15 @@ const routes = [
                         meta: {
                             layout: 'DashboardLayout',
                             title: 'Create User'
+                        }
+                    },
+                    {
+                        path: 'edit/:id',
+                        name: 'EditUser',
+                        component: () => import('@/views/User/EditUser.vue'),
+                        meta: {
+                            layout: 'DashboardLayout',
+                            title: 'Edit User'
                         }
                     },
                 ]

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\Response;
 use Hash;
 use Illuminate\Validation\Rules\Password;
+use Ladder\Ladder;
 
 class StoreUserRequest extends FormRequest
 {
@@ -27,12 +28,12 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            [
                 "name" => ["required", "string"],
                 "email" => ["required", "email", "unique:users,email"],
                 "password" => ["required", $this->passwordCriteria(), "confirmed"],
                 "password_confirmation" => ["required"],
-            ],
+                "roles" => "required|array",
+                "roles.*" => "required_with:roles|in:". implode(',', collect(array_values(Ladder::$roles))->pluck("key")->all())
         ];
     }
 

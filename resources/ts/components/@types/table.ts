@@ -24,10 +24,11 @@ export type TableProps = {
     striped?: boolean,
     hover?: boolean
     sort?: {
-        sortBy?: string,
-        sortType?: "asc" | "desc"
+        column?: string,
+        direction?: "asc" | "desc" | "DESC" | "ASC"
     },
-    serverSide?: boolean
+    serverSide?: boolean,
+    loading?:boolean
 }
 
 export interface DataTableProps extends TableProps {

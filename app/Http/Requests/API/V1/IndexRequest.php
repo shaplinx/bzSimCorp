@@ -27,8 +27,8 @@ class IndexRequest extends FormRequest
             "search" => ["nullable", "string"],
             "orderBy" => ["nullable", "required_array_keys:column,direction"],
             "orderBy.column" => ["required_with:orderBy", new ColumnExists("users")],
-            "orderBy.direction" => ["required_with:orderBy", "in:ASC,DESC,asc,desc"],
-            "per_page" => ["nullable", "numeric"],
+            "orderBy.direction" => ["required_with:orderBy", "in:asc,desc"],
+            "pageSize" => ["nullable", "numeric"],
         ];
     }
 
@@ -37,6 +37,8 @@ class IndexRequest extends FormRequest
      */
     protected function passedValidation(): void
     {
-        $this->merge(['orderBy' => implode('|', $this->orderBy)]);
+        if ($this->has('orderBy')) {
+            $this->merge(['orderBy' => $this->orderBy["column"] .'|'. $this->orderBy["direction"] ]);
+        }
     }
 }

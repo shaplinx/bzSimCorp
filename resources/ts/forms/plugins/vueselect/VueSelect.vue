@@ -118,3 +118,26 @@ const classes = {
     spacer: "h-9 py-px box-content",
 };
 </script>
+<style>
+.multiselect-wrapper {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+    align-items: center;
+    justify-content: flex-end;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+.multiselect-assistive-text {
+    position: absolute;
+    margin: -1px;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0)
+}
+</style>

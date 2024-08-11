@@ -1,11 +1,13 @@
 <template>
     <Card variant="base">
+        <SpinnerOverlay :show="loading"/>
         <Table
             v-bind="props"
             :data="dataForRender"
             @update:sort="(val) => $emit('update:sort',val)"
             @update:selected="(val) => $emit('update:selected',val)"
         >
+
             <template v-for="field in fields" #[`header-${field.value}`]="{ item }">
                 <span v-if="!hasNamedSlot(`header-${field.value}`)" :item="item">
                     {{ item.label }}
@@ -14,7 +16,7 @@
             </template>
             <template v-for="field in fields" #[`item-${field.value}`]="{ item }">
                 <span v-if="!hasNamedSlot(`item-${field.value}`)" :item="item">
-                    {{ item[field.label] }}
+                    {{ item[field.value] }}
                 </span>
                 <slot v-else :name="`item-${field.value}`" :item="item" />
             </template>
@@ -47,6 +49,8 @@ import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import Card from '../cards/Card.vue';
 import Pagination from '../buttons/Pagination.vue';
 import { watchDeep } from '@vueuse/core';
+import SpinnerOverlay from '../loader/SpinnerOverlay.vue';
+
 
 const props = defineProps<TableProps & {
     pagination?: {

@@ -50,6 +50,17 @@ class User extends Authenticatable
         return $this->permissions();
     }
 
+    public function setRoles($newRoles = []) {
+        $oldRoles = $this->roles->pluck("role");
+        $newRoles = collect($newRoles)->unique()->each(function($newRole) {
+            $this->roles()->updateOrCreate(["role" => $newRole]);
+        });
+        $oldRoles->diff($newRoles)->each(function ($unused) {
+            $this->roles()->where(["role" => $unused])->delete();
+        });
+
+    }
+
 
 
 }

@@ -24,7 +24,7 @@ const NavItems: Base.Component.Menu.MenuItem[] = [
         id: "user",
         icon: faTable,
         label: "Data Table",
-        to: { name: "DataTableindex" },
+        to: { name: "UserIndex" },
         child: [
             {
                 id:"createUser",

@@ -9,6 +9,8 @@ import Vue3Toastify from 'vue3-toastify';
 import App from './App.vue'
 import router from './router'
 import form from "@/forms/initForms"
+import { createVfm } from 'vue-final-modal'
+
 
 const app = createApp(App);
 
@@ -23,6 +25,7 @@ app.use(floatingVue, {
       },
 })
 app.use(Vue3Toastify, {theme: "colored", position:"bottom-right", clearOnUrlChange:false})
+app.use(createVfm())
 app.use(form.plugin,form.config)
 app.component('FontAwesomeIcon',FontAwesomeIcon)
 app.mount('#app')
