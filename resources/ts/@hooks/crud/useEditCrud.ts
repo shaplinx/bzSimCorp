@@ -1,11 +1,12 @@
 import { RouteLocationNamedRaw, useRoute, useRouter } from "vue-router"
-import { CrudResourcesInstance } from "../api/useCrud"
+import { CrudResourcesInstance, SuccessResponse } from "../api/useCrud"
 import { reactive } from "vue"
 import { getNode } from '@formkit/core'
 import { ButtonProps } from "@/components/@types/button"
 import { faChevronLeft, faPaperPlane, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
 import { useModal } from "vue-final-modal"
 import DeleteConfirmationModal from "@/components/containers/DeleteConfirmationModal.vue"
+import { AxiosError, AxiosResponse } from "axios"
 
 
 export type EditCrudConfig<T> = {
@@ -24,8 +25,8 @@ export type EditCrudConfig<T> = {
     onFetchSuccess?: () => any
     onFetchError?: () => any
     proccessUpdateData?: (data: T) => any
-    onUpdateSuccess?: () => any
-    onUpdateError?: () => any
+    onUpdateSuccess?: (res : AxiosResponse<SuccessResponse<T>>) => any
+    onUpdateError?: (err: AxiosError) => any
     generateDeleteObject?: (model : T) => {[key:string] : string }
 }
 
@@ -111,15 +112,18 @@ export function useEditCrud<T = any>(config: EditCrudConfig<T>) {
     }
 
     function updateSubmit(data : T) {
+        getNode(formId)?.clearErrors()
         reactives.isSubmitting = true
         return new Promise((resolve,reject) => {
             resources.update?.(route.params.id as string, {data: proccessUpdateData(data)})
             .then(res => {
+                config.onUpdateSuccess?.(res)
                 getNode(formId)?.input(proccessFetchData(res.data.data as T))
                 reactives.model = res.data.data as any
                 resolve(res)
             })
             .catch((err) => {
+                config.onUpdateError?.(err)
                 getNode(formId)?.setErrors(err.response.data.errors)
                 reject(err)
             })
