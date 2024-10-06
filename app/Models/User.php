@@ -3,11 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Finance\Bank;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Sanctum\PersonalAccessToken;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Ladder\HasRoles;
 
 class User extends Authenticatable
@@ -59,6 +62,16 @@ class User extends Authenticatable
             $this->roles()->where(["role" => $unused])->delete();
         });
 
+    }
+
+        /**
+     * The banks that belong to the Bank
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function banks(): BelongsToMany
+    {
+        return $this->belongsToMany(Bank::class, 'bank_user', 'user_id', 'bank_id');
     }
 
 

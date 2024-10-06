@@ -26,6 +26,11 @@ Route::prefix("v1")->group(function () {
         Route::get('auth/all-permissions', [LadderController::class, "getAllPermissions"] );
 
         Route::resource('user', App\Http\Controllers\API\V1\UserController::class);
+        Route::prefix("finance")->group(function() {
+            Route::resource('bank', App\Http\Controllers\API\V1\Finance\BankController::class);
+            Route::resource('transaction-category', App\Http\Controllers\API\V1\Finance\TransactionCategoryController::class);
+
+        });
 
     });
 

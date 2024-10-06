@@ -29,6 +29,9 @@ class IndexRequest extends FormRequest
             "orderBy.column" => ["required_with:orderBy", new ColumnExists("users")],
             "orderBy.direction" => ["required_with:orderBy", "in:asc,desc"],
             "pageSize" => ["nullable", "numeric"],
+            "finance_transaction_type" =>  ["nullable", "in:in,out"],
+            "finance_loan_type" =>  ["nullable", "in:in,out"]
+
         ];
     }
 

@@ -33,7 +33,23 @@ class LadderServiceProvider extends ServiceProvider
             'user:read',
             'user:update',
             'user:delete',
-        ])->description('Administrator users can perform any action to the user.');
+            'bank:create',
+            'bank:read',
+            'bank:update',
+            'bank:delete',
+            'transaction-category:create',
+            'transaction-category:read',
+            'transaction-category:update',
+            'transaction-category:delete',
+            'transaction:create',
+            'transaction:read',
+            'transaction:update',
+            'transaction:delete',
+            'loan:create',
+            'loan:read',
+            'loan:update',
+            'loan:delete',
+        ]);
 
         Ladder::role('standard', 'Standard', [
             'user:read',
