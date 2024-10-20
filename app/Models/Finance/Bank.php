@@ -15,7 +15,8 @@ class Bank extends Model
     protected $fillable = [
         "id",
         "name",
-        "hex_color"
+        "hex_color",
+
     ];
 
     protected $primaryKey = 'id';
@@ -60,22 +61,50 @@ class Bank extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function transaction_categories(): HasMany
+    public function transactionCategories(): HasMany
     {
         return $this->hasMany(TransactionCategory::class);
     }
 
-    public function getTransactionBallanceAttribute() {
-        return $this->transactions->sum("amount");
+    public function transactionMutations()
+    {
+        return $this->hasManyThrough(BankMutation::class, Transaction::class, 'bank_id', 'mutator_id')->where("mutator_type",Transaction::class);
     }
 
-    public function getLoanBallanceAttribute() {
-        return $this->loans->sum(function (Loan $loan) {
-            return $loan->ballance;
+    public function loanMutations()
+    {
+        return $this->hasManyThrough(BankMutation::class, Loan::class, 'bank_id', 'mutator_id')->where("mutator_type",Loan::class);
+    }
+
+    public function getStatsAtribute() {
+        $stats = [
+            "ballance" => 0,
+            "moneyIn" => 0,
+            "moneyOut" => 0,
+            "transactions" => 0,
+            "loans" => 0
+        ];
+
+        $this->transactions->each(function (Transaction $transaction) {
+            $stats["transactions"] = bcadd(strval($stats["transactions"]),strval($transaction->amount));
+            if ($transaction->sign === 1) {
+                $stats["moneyIn"] = bcadd(strval($stats["moneyIn"]),strval($transaction->amount));
+            } else {
+                $stats["moneyOut"] = bcsub(strval($stats["moneyOut"]),strval($transaction->amount));
+            }
         });
-    }
 
-    public function getTotalBallanceAttribute() {
-        return $this->transactionBallance + $this->loanBallance;
+        $this->loans->each(function (Transaction $transaction) {
+            $stats["loans"] = bcadd(strval($stats["loans"]),strval($transaction->amount));
+            if ($transaction->sign === 1) {
+                $stats["moneyIn"] = bcadd(strval($stats["moneyIn"]),strval($transaction->amount));
+            } else {
+                $stats["moneyOut"] = bcsub(strval($stats["moneyOut"]),strval($transaction->amount));
+            }
+        });
+
+        $stats["ballance"] = bcadd(strval($stats["transactions"]),strval($stats["loans"] ));
+
+        return $stats;
     }
 }

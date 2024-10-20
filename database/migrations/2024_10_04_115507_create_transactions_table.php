@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->text("note");
             $table->dateTime("date");
-            $table->decimal("amount",16,2);
-            $table->unsignedBigInteger('transaction_category_id')->nullable();
-            $table->foreign("transaction_category_id")->references('id')->on('transaction_categories')->nullOnDelete()->onUpdate("cascade");
+            $table->string("name");
+            $table->text("note")->nullable();
+            $table->enum("type",["in","out"]);
+            $table->unsignedBigInteger("transaction_category_id");
+            $table->foreign('transaction_category_id')->references('id')->on('transaction_categories')->onDelete('cascade')->onUpdate("cascade");
             $table->string('bank_id');
             $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

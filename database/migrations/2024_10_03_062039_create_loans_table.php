@@ -18,6 +18,7 @@ return new class extends Migration
             $table->dateTime("date");
             $table->decimal("amount",16,2);
             $table->enum("type",["in","out"]);
+            $table->boolean("completed");
             $table->string('bank_id');
             $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

@@ -30,8 +30,9 @@ class IndexRequest extends FormRequest
             "orderBy.direction" => ["required_with:orderBy", "in:asc,desc"],
             "pageSize" => ["nullable", "numeric"],
             "finance_transaction_type" =>  ["nullable", "in:in,out"],
-            "finance_loan_type" =>  ["nullable", "in:in,out"]
-
+            "finance_loan_type" =>  ["nullable", "in:in,out"],
+            "finance_transaction_category" => ["nullable","numeric"],
+            "finance_bank" => ["nullable","string"],
         ];
     }
 

@@ -25,7 +25,7 @@ class BankController extends ApiController
                     $q->where("users.id", $user->id);
                 });
             })
-            ->with(["transactions", "loans.loanTransactions"])
+            ->with(["transactions.bankMutations", "loans.bankMutations"])
             ->when($request->search, function (Builder $query, string $search) {
                 $query->where(function (Builder $q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -40,7 +40,7 @@ class BankController extends ApiController
             ->paginate($request->pageSize ?? 10);
 
         $data->getCollection()->transform(function ($bank) {
-            return $bank->append(["transaction_ballance", "loan_ballance", "total_ballance"]);
+            return $bank->append(["stats"]);
         });
 
         return $this->sendResponseWithPaginatedData($data);

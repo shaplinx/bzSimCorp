@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('loan_transactions', function (Blueprint $table) {
-            $table->id();
+        Schema::create('bank_mutations', function (Blueprint $table) {
+            $table->uuid("id")->primary();
+            $table->string("name");
             $table->dateTime("date");
-            $table->foreignId("loan_id")->constrained()->onDelete('cascade')->onUpdate("cascade");
             $table->decimal("amount",16,2);
-            $table->text("note");
+            $table->morphs('mutable');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('loan_transactions');
+        Schema::dropIfExists('bank_mutations');
     }
 };
