@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 class Bank extends Model
 {
@@ -66,44 +67,53 @@ class Bank extends Model
         return $this->hasMany(TransactionCategory::class);
     }
 
-    public function transactionMutations()
+        /**
+     * Get all of the mutations for the Bank
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mutations(): HasMany
     {
-        return $this->hasManyThrough(BankMutation::class, Transaction::class, 'bank_id', 'mutator_id')->where("mutator_type",Transaction::class);
+        return $this->hasMany(BankMutation::class)
+        ->select(
+            'mutable_type', 
+            'mutable_id', 
+            'date',
+            DB::raw('GROUP_CONCAT(description SEPARATOR "|") as description'),
+            DB::raw('SUM(amount) as amount'), 'bank_id')
+        ->groupBy('mutable_type', 'mutable_id', 'bank_id', 'date');
     }
 
-    public function loanMutations()
-    {
-        return $this->hasManyThrough(BankMutation::class, Loan::class, 'bank_id', 'mutator_id')->where("mutator_type",Loan::class);
-    }
+    
 
-    public function getStatsAtribute() {
+    public function getStatsAttribute() {
         $stats = [
-            "ballance" => 0,
-            "moneyIn" => 0,
-            "moneyOut" => 0,
-            "transactions" => 0,
-            "loans" => 0
+            "ballance" => "0",
+            "moneyIn" => "0",
+            "moneyOut" => "0",
+            "transactions" => "0",
+            "loans" => "0"
         ];
 
-        $this->transactions->each(function (Transaction $transaction) {
-            $stats["transactions"] = bcadd(strval($stats["transactions"]),strval($transaction->amount));
-            if ($transaction->sign === 1) {
-                $stats["moneyIn"] = bcadd(strval($stats["moneyIn"]),strval($transaction->amount));
+        $this->mutations->each(function (BankMutation $mutation) use (&$stats) {
+            if ($mutation->amount < 0) {
+                $stats["moneyOut"] = bcadd($stats["moneyOut"], $mutation->amount);
             } else {
-                $stats["moneyOut"] = bcsub(strval($stats["moneyOut"]),strval($transaction->amount));
+                $stats["moneyIn"] = bcadd($stats["moneyIn"], $mutation->amount);
             }
+
+            switch ($mutation->mutable_type) {
+                case Transaction::class :
+                    $stats["transactions"] = bcadd($stats["transactions"], $mutation->amount);
+                    break;
+                    case Loan::class :
+                    $stats["loans"] = bcadd($stats["loans"], $mutation->amount);
+                    break;
+            }
+
         });
 
-        $this->loans->each(function (Transaction $transaction) {
-            $stats["loans"] = bcadd(strval($stats["loans"]),strval($transaction->amount));
-            if ($transaction->sign === 1) {
-                $stats["moneyIn"] = bcadd(strval($stats["moneyIn"]),strval($transaction->amount));
-            } else {
-                $stats["moneyOut"] = bcsub(strval($stats["moneyOut"]),strval($transaction->amount));
-            }
-        });
-
-        $stats["ballance"] = bcadd(strval($stats["transactions"]),strval($stats["loans"] ));
+        $stats["ballance"] = bcadd($stats["moneyIn"], $stats["moneyOut"]);
 
         return $stats;
     }

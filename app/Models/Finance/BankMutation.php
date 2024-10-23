@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class BankMutation extends Model
@@ -15,21 +16,28 @@ class BankMutation extends Model
     protected $keyType = 'string';
     public $incrementing = false;
     protected $fillable =[
-        "name",
+        "description",
         "date",
-        "amount"
+        "amount",
+        "bank_id"
     ];
 
     public static function booted() {
         static::creating(function ($model) {
             $model->id = Str::uuid();
         });
+
+        static::addGlobalScope('order', function (Builder $builder) {
+            $builder->orderBy('date', 'desc')  
+                    ->orderBy('created_at', 'desc'); 
+        });
+
     }
 
      /**
-     * Get the parent mutator model.
+     * Get the parent mutable model.
      */
-    public function mutator(): MorphTo
+    public function mutable(): MorphTo
     {
         return $this->morphTo();
     }

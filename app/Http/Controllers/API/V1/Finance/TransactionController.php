@@ -19,7 +19,7 @@ class TransactionController extends ApiController
     {
         $this->authorize('viewAny', Transaction::class);
         $user = $request->user();
-        $data = Transaction::with(["bankMutations", "bank"])
+        $data = Transaction::with(["mutations", "bank"])
         ->whereHas("bank", function (Builder $bankBuilder) use ($user, $request) {
             $bankBuilder
                 ->when($request->finance_bank, function (Builder $query, string $bank) {
@@ -43,8 +43,8 @@ class TransactionController extends ApiController
             $query->orderBy($orderBy[0], $orderBy[1]);
         })->paginate($request->pageSize ?? 10);
 
-        $data->getCollection()->transform(function ($bank) {
-            return $bank->append(["amount"]);
+        $data->getCollection()->transform(function ($transaction) {
+            return $transaction->append(["amount"]);
         });
         return $this->sendResponseWithPaginatedData($data);
     }
@@ -57,11 +57,11 @@ class TransactionController extends ApiController
         $transaction = DB::transaction(function () use ($request) {
             $transaction =  Transaction::create($request->all());
             $transaction->transaction_category()->associate(intval($request->transaction_category_id));
-            $transaction->setAmount($request->amount);
+            $transaction->amount = $request->amount;
             return $transaction;
         });
 
-        return $this->sendResponse(__("Created Successfully"), $transaction);
+        return $this->sendResponse(__("Created Successfully"), $transaction->append("amount"));
     }
 
     /**
@@ -70,7 +70,7 @@ class TransactionController extends ApiController
     public function show(Transaction $transaction)
     {
         $this->authorize('view', $transaction);
-        return $this->sendResponse(__("Fetched Successfully"), $transaction);
+        return $this->sendResponse(__("Fetched Successfully"), $transaction->append("amount"));
     }
 
     /**
@@ -81,11 +81,12 @@ class TransactionController extends ApiController
         $transaction = DB::transaction(function () use ($request, $transaction) {
             $transaction->update($request->all());
             $transaction->transaction_category()->associate(intval($request->transaction_category_id));
-            $transaction->setAmount($request->amount);
+            $transaction->amount = $request->amount;
+            $transaction->refresh();
             return $transaction;
         });
 
-        return $this->sendResponse(__("Updated Successfully"), $transaction);
+        return $this->sendResponse(__("Updated Successfully"), $transaction->append("amount"));
     }
 
     /**

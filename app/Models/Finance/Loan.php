@@ -17,7 +17,6 @@ class Loan extends Model
         "name",
         "note",
         "date",
-        "amount",
         "completed",
         "type",
         "bank_id",
@@ -41,7 +40,7 @@ class Loan extends Model
 
     public function mutations() : MorphMany
     {
-        return $this->morphMany(BankMutation::class, 'mutator');
+        return $this->morphMany(BankMutation::class, 'mutable');
     }
 
     public function getSignAttribute() {

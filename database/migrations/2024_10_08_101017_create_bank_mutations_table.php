@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('bank_mutations', function (Blueprint $table) {
             $table->uuid("id")->primary();
-            $table->string("name");
+            $table->string("description");
             $table->dateTime("date");
             $table->decimal("amount",16,2);
             $table->morphs('mutable');
+            $table->string('bank_id');
+            $table->foreign('bank_id')->references('id')->on('banks')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

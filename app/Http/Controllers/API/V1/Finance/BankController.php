@@ -25,7 +25,7 @@ class BankController extends ApiController
                     $q->where("users.id", $user->id);
                 });
             })
-            ->with(["transactions.bankMutations", "loans.bankMutations"])
+            ->with(["mutations"])
             ->when($request->search, function (Builder $query, string $search) {
                 $query->where(function (Builder $q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -66,7 +66,7 @@ class BankController extends ApiController
     public function show(Bank $bank)
     {
         $this->authorize('view', $bank);
-        return $this->sendResponse(__("Fetched Successfully"), $bank->append(["transaction_ballance", "loan_ballance", "total_ballance"]));
+        return $this->sendResponse(__("Fetched Successfully"), $bank->load("transactions.mutations", "loans.mutations")->append(["stats"]));
     }
 
     /**

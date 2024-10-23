@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Finance\Bank;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Log;
 
 class Transaction extends Model
 {
@@ -43,13 +45,13 @@ class Transaction extends Model
     }
 
     /**
-     * Get the bank_mutation associated with the Transaction
+     * Get the bank_mutations associated with the Transaction
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function bank_mutation(): MorphMany
+    public function mutations(): MorphMany
     {
-        return $this->morphMany(BankMutation::class);
+        return $this->morphMany(BankMutation::class,"mutable");
     }
 
     public function getSignAttribute() {
@@ -57,16 +59,19 @@ class Transaction extends Model
     }
 
     public function getAmountAttribute() {
-        return $this->mutation->sum("amount");
+        return $this->mutations->sum("amount");
     }
 
-    public function setAmount(int $amount) {
+    public function setAmountAttribute(int $amount) {
+        $oldAmount =  $this->amount;
         $newAmount = abs($amount) * $this->sign;
-        if ($this->amount === $newAmount) return;
-        $this->bank_mutation()->updateOrCreate([
-            "amount" =>bcsub(strval($this->amount), strval($newAmount)) * -1,
+        $mutationAmount = bcsub(strval( $oldAmount), strval($newAmount)) * -1;
+        if ( $mutationAmount == 0) return;
+        return $this->mutations()->create([
+            "amount" => $mutationAmount,
             "date" => $this->date,
-            "name" => "Transaction's amount of $this->name changed from $this->amount to $newAmount at $this->updated_at"
+            "bank_id" => $this->bank_id,
+            "description" => "Transaction's amount of $this->name changed from $oldAmount to $newAmount at $this->updated_at"
         ]);
     }
 }
