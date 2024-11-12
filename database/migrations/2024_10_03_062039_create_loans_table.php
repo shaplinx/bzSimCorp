@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string("name");
             $table->text("note");
             $table->dateTime("date");
-            $table->decimal("amount",16,2);
             $table->enum("type",["in","out"]);
             $table->boolean("completed");
             $table->string('bank_id');

@@ -25,7 +25,7 @@ class BankController extends ApiController
                     $q->where("users.id", $user->id);
                 });
             })
-            ->with(["mutations"])
+            ->withSum("mutations as ballance", "amount")
             ->when($request->search, function (Builder $query, string $search) {
                 $query->where(function (Builder $q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
@@ -38,10 +38,6 @@ class BankController extends ApiController
                 $query->orderBy($orderBy[0], $orderBy[1]);
             })
             ->paginate($request->pageSize ?? 10);
-
-        $data->getCollection()->transform(function ($bank) {
-            return $bank->append(["stats"]);
-        });
 
         return $this->sendResponseWithPaginatedData($data);
     }
@@ -66,7 +62,7 @@ class BankController extends ApiController
     public function show(Bank $bank)
     {
         $this->authorize('view', $bank);
-        return $this->sendResponse(__("Fetched Successfully"), $bank->load("transactions.mutations", "loans.mutations")->append(["stats"]));
+        return $this->sendResponse(__("Fetched Successfully"), $bank->append(["stats"]));
     }
 
     /**

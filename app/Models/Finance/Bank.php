@@ -75,13 +75,14 @@ class Bank extends Model
     public function mutations(): HasMany
     {
         return $this->hasMany(BankMutation::class)
-        ->select(
-            'mutable_type', 
-            'mutable_id', 
-            'date',
-            DB::raw('GROUP_CONCAT(description SEPARATOR "|") as description'),
-            DB::raw('SUM(amount) as amount'), 'bank_id')
-        ->groupBy('mutable_type', 'mutable_id', 'bank_id', 'date');
+        ->whereHas("mutable");
+        // ->select(
+        //     'mutable_type', 
+        //     'mutable_id', 
+        //     'date',
+        //     DB::raw('GROUP_CONCAT(description SEPARATOR "|") as description'),
+        //     DB::raw('SUM(amount) as amount'), 'bank_id')
+        // ->groupBy('mutable_type', 'mutable_id', 'bank_id', 'date');
     }
 
     

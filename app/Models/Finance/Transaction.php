@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Finance\Bank;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 use Illuminate\Support\Facades\Log;
 
 class Transaction extends Model
@@ -45,13 +47,23 @@ class Transaction extends Model
     }
 
     /**
-     * Get the bank_mutations associated with the Transaction
+     * Get the bank_mutation associated with the Transaction
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function mutation(): MorphOne
+    {
+        return $this->morphOne(BankMutation::class,"mutable");
+    }
+
+        /**
+     * Get the unused_mutations associated with the Transaction
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function mutations(): MorphMany
+    public function unused_mutations(): MorphMany
     {
-        return $this->morphMany(BankMutation::class,"mutable");
+        return $this->morphMany(BankMutation::class,"mutable")->whereNot('id', $this->mutation?->id);
     }
 
     public function getSignAttribute() {
@@ -59,19 +71,21 @@ class Transaction extends Model
     }
 
     public function getAmountAttribute() {
-        return $this->mutations->sum("amount");
+        return $this->mutation?->amount ?? "0";
     }
 
     public function setAmountAttribute(int $amount) {
         $oldAmount =  $this->amount;
         $newAmount = abs($amount) * $this->sign;
-        $mutationAmount = bcsub(strval( $oldAmount), strval($newAmount)) * -1;
-        if ( $mutationAmount == 0) return;
-        return $this->mutations()->create([
-            "amount" => $mutationAmount,
+        if (  $oldAmount == $newAmount) return;
+        return $this->mutation()->updateOrCreate([
+            "mutable_type" => self::class,
+            "mutable_id" => $this->id
+        ],[
+            "amount" => $newAmount,
             "date" => $this->date,
             "bank_id" => $this->bank_id,
-            "description" => "Transaction's amount of $this->name changed from $oldAmount to $newAmount at $this->updated_at"
+            "description" => "Mutation for Transaction $this->name"
         ]);
     }
 }

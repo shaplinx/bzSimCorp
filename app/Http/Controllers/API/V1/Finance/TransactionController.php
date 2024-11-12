@@ -19,7 +19,7 @@ class TransactionController extends ApiController
     {
         $this->authorize('viewAny', Transaction::class);
         $user = $request->user();
-        $data = Transaction::with(["mutations", "bank"])
+        $data = Transaction::withSum("mutation as transaciton_amount","amount")
         ->whereHas("bank", function (Builder $bankBuilder) use ($user, $request) {
             $bankBuilder
                 ->when($request->finance_bank, function (Builder $query, string $bank) {
@@ -43,9 +43,6 @@ class TransactionController extends ApiController
             $query->orderBy($orderBy[0], $orderBy[1]);
         })->paginate($request->pageSize ?? 10);
 
-        $data->getCollection()->transform(function ($transaction) {
-            return $transaction->append(["amount"]);
-        });
         return $this->sendResponseWithPaginatedData($data);
     }
 
@@ -58,7 +55,7 @@ class TransactionController extends ApiController
             $transaction =  Transaction::create($request->all());
             $transaction->transaction_category()->associate(intval($request->transaction_category_id));
             $transaction->amount = $request->amount;
-            return $transaction;
+            return $transaction->refresh();
         });
 
         return $this->sendResponse(__("Created Successfully"), $transaction->append("amount"));
@@ -82,7 +79,8 @@ class TransactionController extends ApiController
             $transaction->update($request->all());
             $transaction->transaction_category()->associate(intval($request->transaction_category_id));
             $transaction->amount = $request->amount;
-            $transaction->refresh();
+            $transaction->load("mutation");
+            $transaction->unused_mutations()->delete();
             return $transaction;
         });
 
@@ -95,7 +93,10 @@ class TransactionController extends ApiController
     public function destroy(Transaction $transaction)
     {
         $this->authorize('delete', $transaction);
-        $transaction->delete();
+        DB::transaction(function () {
+            $transaction->mutation()->delete();
+            $transaction->delete();
+        });
         return $this->sendResponse(__("Deleted Successfully"));
     }
 }

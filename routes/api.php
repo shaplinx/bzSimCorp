@@ -30,6 +30,8 @@ Route::prefix("v1")->group(function () {
             Route::resource('bank', App\Http\Controllers\API\V1\Finance\BankController::class);
             Route::resource('transaction-category', App\Http\Controllers\API\V1\Finance\TransactionCategoryController::class);
             Route::resource('transaction', App\Http\Controllers\API\V1\Finance\TransactionController::class);
+            Route::resource('loan', App\Http\Controllers\API\V1\Finance\LoanController::class);
+
 
         });
 

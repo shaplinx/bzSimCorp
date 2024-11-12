@@ -17,6 +17,8 @@ class AuthServiceProvider extends ServiceProvider
         'App\Models\Finance\Bank' => 'App\Policies\Finance\BankPolicy',
         'App\Models\Finance\TransactionCategory' => 'App\Policies\Finance\TransactionCategoryPolicy',
         'App\Models\Finance\Transaction' => 'App\Policies\Finance\TransactionPolicy',
+        'App\Models\Finance\Loan' => 'App\Policies\Finance\LoanPolicy',
+        
 
 
     ];

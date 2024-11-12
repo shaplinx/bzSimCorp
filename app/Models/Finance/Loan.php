@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Carbon;
 
 class Loan extends Model
@@ -43,40 +46,59 @@ class Loan extends Model
         return $this->morphMany(BankMutation::class, 'mutable');
     }
 
+    public function principal_mutation() : MorphOne
+    {
+        return $this->morphOne(BankMutation::class, 'mutable')
+         ->withoutGlobalScope('order')
+         ->orderBy('date', 'asc')  
+         ->orderBy('created_at', 'asc');
+    }
+
+    public function payment_mutations() : MorphMany
+    {
+        return $this->morphMany(BankMutation::class, 'mutable')
+        ->whereRaw('bank_mutations.id != (
+            SELECT id FROM bank_mutations 
+            WHERE mutable_id = ? 
+            AND mutable_type = ? 
+            LIMIT 1
+        )', [$this->id, get_class($this)])
+        ->orderByRaw('bank_mutations.date ASC')
+        ->orderByRaw('bank_mutations.created_at ASC');
+    }
+
     public function getSignAttribute() {
         return $this->type === "in" ? 1 : -1;
     }
 
-    public function getLoanStatsAttribute() {
-        $loanStats = [
-            "total" => 0,
-            "paid" => 0
-        ];
-
-        $this->mutations->each(function ($mutation) use ($loanStats) {
-            if ($mutation->amount * $this->sign > 0) {
-                $loanStats["total"] = bcadd(strval($loanStats["total"]),strval($mutation->amount));
-            }
-            else if ($mutation->amount * $this->sign < 0) {
-                $loanStats["paid"] = bcadd(strval($loanStats["paid"]),strval($mutation->amount));
-            }
-        });
-
-        $loanStats["percentage"] = bcdiv(strval($loanStats["paid"]),strval($loanStats["total"]));
-
-        return $loanStats;
+    public function getAmountAttribute() {
+        return $this->principal_mutation->amount;
     }
 
+    public function getPaidAmountAttribute() {
+        return $this->payment_mutations->reduce(function ($sum,BankMutation $mutation) {
+                return bcadd($sum,$mutation->amount);
+            }, "0");
+    }
 
-    public function setTotalLoan($amount) {
-        $total =$this->loanStats["total"];
-        if ( abs($amount) ===  abs($total))  return;
-        $newTotal = abs($amount) * $this->sign;
-
-        $this->mutations()->create([
-            "amount" => bcsub(strval($total), strval($newTotal)) * -1,
+    public function setAmountAttribute($amount) {
+        $this->principal_mutation()->updateOrCreate([
+            "mutable_type" => self::class,
+            "mutable_id" => $this->id,
+            "bank_id" => $this->bank_id
+        ],
+        [
+            "amount" => abs($amount) * $this->sign,
             "date" => $this->date,
-            "name" => "Loan $this->name Amount changed from $total to $newTotal at $this->updated_at"
+            "description" => "Principal Loan Amount Mutation for $this->name"
+        ]);
+        
+        return $amount;
+    }
+    
+    public function invertMutation() {
+        $this->mutations()->update([
+            'amount' => DB::raw('amount * -1')
         ]);
     }
 
@@ -84,39 +106,8 @@ class Loan extends Model
         $this->mutations()->create([
             "amount" => -1 * abs($amount) *$this->sign,
             "date" => Carbon::parse($date),
-            "name" => $note
+            "bank_id" => $this->bank_id,
+            "descriptions" => $note
         ]);
     }
-
-
-    // public function adjustFirstLoanTransaction()
-    // {
-    //     $loanTransaction = [
-    //         "date" => $this->date,
-    //         "note" => $this->title,
-    //         "amount" => $this->type === "in" ? abs($this->amount) : abs($this->amount) * -1,
-    //     ];
-    //     $firstLoanTransaction = $this->loanTransactions()->first();
-    //     !$firstLoanTransaction ? $this->loanTransactions()->create($loanTransaction) : $firstLoanTransaction->update($loanTransaction);
-    //     return $firstLoanTransaction;
-    // }
-
-    // public function getRepaymentRatioAttribute() {
-    //     return abs(bcdiv(
-    //             strval($this->loanTransactions()->sum("amount")),
-    //             strval($amount)));
-    // }
-
-    // public function getRepaidAmountAttribute() {
-    //     return $this->loanTransactions()->sum("amount");
-    // }
-
-    // public function getMultiplierAttribute() {
-    //     return $this->type === "in" ? 1 :-1;
-    // }
-
-    // public function getRemainingLoanAttribute() {
-    //     return bcadd(strval($this->amunt * $this->multiplier),strval($this->repaidAmount));
-    // }
-
 }
