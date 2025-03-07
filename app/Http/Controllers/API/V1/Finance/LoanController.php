@@ -5,11 +5,14 @@ namespace App\Http\Controllers\API\V1\Finance;
 use App\Http\Requests\API\V1\Finance\StoreLoanRequest;
 use App\Http\Requests\API\V1\Finance\UpdateLoanRequest;
 use App\Models\Finance\Loan;
+use App\Models\Finance\BankMutation;
 use App\Http\Controllers\API\V1\ApiController;
 use App\Http\Requests\API\V1\IndexRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Carbon\Carbon;
 
 class LoanController extends ApiController
 {
@@ -60,7 +63,7 @@ class LoanController extends ApiController
             return $loan->refresh();
         });
 
-        return $this->sendResponse(__("Created Successfully"), $loan->append("amount"));
+        return $this->sendResponse(__("Created Successfully"), $loan->append("amount","PaidAmount"));
     }
 
     /**
@@ -69,7 +72,7 @@ class LoanController extends ApiController
     public function show(Loan $loan)
     {
         $this->authorize('view', $loan);
-        return $this->sendResponse(__("Fetched Successfully"), $loan->append("amount","paidAmount" ));
+        return $this->sendResponse(__("Fetched Successfully"), $loan->append("amount","PaidAmount"));
     }
 
     /**
@@ -102,11 +105,57 @@ class LoanController extends ApiController
         return $this->sendResponse(__("Deleted Successfully"));
     }
 
-    public function payLoan(Request $request) {
+    public function addPayment(Request $request, Loan $loan) {
+        Gate::authorize('update', $loan);
+         $request->validate([
+            "amount" =>  ["required", "numeric", "gt:0"],
+            "date" => ["required", "date"],
+            "description"  =>  ["required", "string", "max:1000", "min:3"]
+        ]);
+        $payment = $loan->payLoan($request->amount, $request->date, $request->description);
+        return $this->sendResponse(__("Created Successfully"), $payment);
+    }
+
+    public function deletePayment(Request $request, Loan $loan, BankMutation $bank_mutation) {
+        Gate::authorize('update', $loan);
+        abort_if(!$loan->payment_mutations()->where("id", $bank_mutation->id)->exists(), 403, 'Bank mutation does not belong to the specified loan.');
+        $bank_mutation->delete();
+        return $this->sendResponse(__("Deleted Successfully"), $bank_mutation);
+    }
+
+    public function updatePayment(Request $request, Loan $loan, BankMutation $bank_mutation) {
+        Gate::authorize('update', $loan);
         $request->validate([
             "amount" =>  ["required", "numeric", "gt:0"],
             "date" => ["required", "date"],
             "description"  =>  ["required", "string", "max:1000", "min:3"]
         ]);
+        abort_if(!$loan->payment_mutations()->where("id", $bank_mutation->id)->exists(), 403, 'Bank mutation does not belong to the specified loan.');
+
+        $bank_mutation->update([
+            "amount" => -1 * abs($request->amount) *$loan->sign,
+            "date" => Carbon::parse($request->date),
+            "bank_id" => $loan->bank_id,
+            "descriptions" => $request->note
+        ]);
+        return $this->sendResponse(__("Created Successfully"), $bank_mutation);
+    }
+
+    public function listPayment(IndexRequest $request, Loan $loan)
+    {
+        $this->authorize('viewAny', Loan::class);
+        $user = $request->user();
+        $data = $loan->payment_mutations()
+       ->when($request->search, function (Builder $query, string $search) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('amount', 'like', "%{$search}%");
+            });
+        })->when($request->orderBy, function (Builder $query, string $orderBy) {
+            $orderBy = explode('|', $orderBy);
+            $query->orderBy($orderBy[0], $orderBy[1]);
+        })->paginate($request->pageSize ?? 10);
+
+        return $this->sendResponseWithPaginatedData($data);
     }
 }

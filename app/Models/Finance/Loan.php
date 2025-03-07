@@ -51,20 +51,21 @@ class Loan extends Model
         return $this->morphOne(BankMutation::class, 'mutable')
          ->withoutGlobalScope('order')
          ->orderBy('date', 'asc')  
-         ->orderBy('created_at', 'asc');
+         ->orderBy('created_at', 'asc')
+         ->limit(1);
     }
 
     public function payment_mutations() : MorphMany
     {
         return $this->morphMany(BankMutation::class, 'mutable')
         ->whereRaw('bank_mutations.id != (
-            SELECT id FROM bank_mutations 
+             SELECT id FROM bank_mutations 
             WHERE mutable_id = ? 
-            AND mutable_type = ? 
-            LIMIT 1
-        )', [$this->id, get_class($this)])
-        ->orderByRaw('bank_mutations.date ASC')
-        ->orderByRaw('bank_mutations.created_at ASC');
+             AND mutable_type = ? 
+             ORDER BY bank_mutations.date ASC, bank_mutations.created_at ASC
+           LIMIT 1
+        )', [$this->id, get_class($this)]);
+
     }
 
     public function getSignAttribute() {
@@ -76,9 +77,11 @@ class Loan extends Model
     }
 
     public function getPaidAmountAttribute() {
-        return $this->payment_mutations->reduce(function ($sum,BankMutation $mutation) {
-                return bcadd($sum,$mutation->amount);
-            }, "0");
+        return $this->payment_mutations()->sum("amount");
+    }
+
+    public function getFinalAmountAttribute() {
+        return $this->mutations()->sum("amount");
     }
 
     public function setAmountAttribute($amount) {
@@ -103,11 +106,11 @@ class Loan extends Model
     }
 
     public function payLoan($amount, $date, $note) {
-        $this->mutations()->create([
+        return $this->mutations()->create([
             "amount" => -1 * abs($amount) *$this->sign,
             "date" => Carbon::parse($date),
             "bank_id" => $this->bank_id,
-            "descriptions" => $note
+            "description" => $note
         ]);
     }
 }

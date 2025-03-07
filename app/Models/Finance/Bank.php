@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 class Bank extends Model
 {
     use HasFactory;
@@ -75,7 +75,12 @@ class Bank extends Model
     public function mutations(): HasMany
     {
         return $this->hasMany(BankMutation::class)
-        ->whereHas("mutable");
+        ->whereHas("mutable")
+        ->where(function($q) {
+            $q->where("mutable_type",Transaction::Class);
+        })
+        ->groupBy('mutable_id');
+        //->orWhere("mutable_type",Loan::Class);
         // ->select(
         //     'mutable_type', 
         //     'mutable_id', 
@@ -83,6 +88,35 @@ class Bank extends Model
         //     DB::raw('GROUP_CONCAT(description SEPARATOR "|") as description'),
         //     DB::raw('SUM(amount) as amount'), 'bank_id')
         // ->groupBy('mutable_type', 'mutable_id', 'bank_id', 'date');
+    }
+
+    public function generateReports(array | null $params = null) {
+        extract($params);
+        $transactions = $this->mutations()
+            ->with("transaction_category")
+            ->where("mutable_type", Transaction::class)
+            ->when($from, function($q, $fr) {
+                $q->whereDate('date', ">=", Carbon::parse($fr));
+            })
+            ->when($to, function($q, $t) {
+                $q->whereDate('date', "<=", Carbon::parse($t));
+            })->get();
+        $loans = $this->mutations()
+            ->where("mutable_type", Loan::class)
+            ->when($from, function($q, $fr) {
+                $q->whereDate('date', ">=", Carbon::parse($fr));
+            })
+            ->when($to, function($q, $t) {
+                $q->whereDate('date', "<=", Carbon::parse($t));
+            })->get();
+
+        $table = $transactions->groupBy(function (array $item) {
+            return $item->transaction_category->name;
+        })
+        ->push(["Loans" => $loans])
+        ->all();
+
+        return $table;
     }
 
     

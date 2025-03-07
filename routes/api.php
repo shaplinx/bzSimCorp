@@ -31,6 +31,11 @@ Route::prefix("v1")->group(function () {
             Route::resource('transaction-category', App\Http\Controllers\API\V1\Finance\TransactionCategoryController::class);
             Route::resource('transaction', App\Http\Controllers\API\V1\Finance\TransactionController::class);
             Route::resource('loan', App\Http\Controllers\API\V1\Finance\LoanController::class);
+            Route::get('loan/{loan}/payment', [App\Http\Controllers\API\V1\Finance\LoanController::class,"listPayment"]);
+            Route::post('loan/{loan}/payment', [App\Http\Controllers\API\V1\Finance\LoanController::class,"addPayment"]);
+            Route::patch('loan/{loan}/payment/{bank_mutation}', [App\Http\Controllers\API\V1\Finance\LoanController::class,"updatePayment"]);
+            Route::delete('loan/{loan}/payment/{bank_mutation}', [App\Http\Controllers\API\V1\Finance\LoanController::class,"deletePayment"]);
+
 
 
         });
