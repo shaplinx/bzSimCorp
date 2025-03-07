@@ -35,9 +35,10 @@ Route::prefix("v1")->group(function () {
             Route::post('loan/{loan}/payment', [App\Http\Controllers\API\V1\Finance\LoanController::class,"addPayment"]);
             Route::patch('loan/{loan}/payment/{bank_mutation}', [App\Http\Controllers\API\V1\Finance\LoanController::class,"updatePayment"]);
             Route::delete('loan/{loan}/payment/{bank_mutation}', [App\Http\Controllers\API\V1\Finance\LoanController::class,"deletePayment"]);
-
-
-
+        });
+        Route::prefix("document")->group(function() {
+            Route::resource('document', App\Http\Controllers\API\V1\Document\DocumentController::class);
+            Route::resource('document-category', App\Http\Controllers\API\V1\Document\DocumentCategoryController::class);
         });
 
     });
