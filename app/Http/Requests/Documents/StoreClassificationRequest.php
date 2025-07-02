@@ -29,7 +29,7 @@ class StoreClassificationRequest extends FormRequest
                 'exists:classifications,id',
                 'not_in:' . $classification?->id, // prevent self-referencing
             ],
-            'separator' => 'required|string|min:1|max:5',
+            'classification_separator' => 'required|string|min:1|max:5',
         ];
     }
 }

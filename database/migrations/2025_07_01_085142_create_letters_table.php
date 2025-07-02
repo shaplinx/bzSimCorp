@@ -16,19 +16,21 @@ return new class extends Migration {
             $table->foreignId('institution_id')->constrained('institutions')->onDelete('restrict');
             $table->foreignId('classification_id')->constrained('classifications')->onDelete('restrict');
 
-            $table->unsignedInteger('sequence_number');  // e.g. 30
-
+            $table->unsignedInteger('sn')->nullable();
             $table->string('subject');
             $table->string('recipient')->nullable();
             $table->date('letter_date');
 
             $table->string('file_path')->nullable();
+            $table->timestamp('voided_at')->nullable();
+            $table->timestamp('issued_at')->nullable();
 
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['institution_id', 'classification_id', 'letter_date', 'sequence_number']);
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
 
+
+            $table->unique(['institution_id', 'classification_id', 'letter_date', 'sn']);
         });
     }
 

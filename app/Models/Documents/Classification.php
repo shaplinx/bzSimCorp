@@ -24,29 +24,27 @@ class Classification extends Model
         return $this->hasMany(Letter::class);
     }
 
-public function parent()
-{
-    return $this->belongsTo(self::class, 'parent_id');
-}
-
-    public function getLongCodeAttribute() : string {
-    $segments = [$this->code];
-    $current = $this->parent;
-    $visited = [$this->id]; 
-    $depth = 1; 
-
-    while ($current  && $depth < 3) {
-        if (in_array($current->id, $visited)) {
-            break; // cycle detected
-        }
-        array_unshift($segments, $current->code); // prepend parent code
-        $separator = $current->separator ?? $separator;
-        $current = $current->parent;
-        $depth++;
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id');
     }
 
-     return implode( $this->separator ?? '.', $segments);
+    public function getLongCodeAttribute(): string
+    {
+        //$segments = [$this->code];
+        $codes = $this->code;
+        $current = $this->parent;
+        $visited = [$this->id];
 
+        while ($current) {
+            if (in_array($current->id, $visited)) {
+                break; // cycle detected
+            }
+            $codes = $codes . $current->classification_separator . $current->code;
+            $current = $current->parent;
+        }
+
+        return $codes;
 
     }
 
