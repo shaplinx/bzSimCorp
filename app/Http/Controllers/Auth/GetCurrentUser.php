@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\API\V1\ApiController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class GetCurrentUser extends ApiController
+class GetCurrentUser extends Controller
 {
     /**
      * Handle the incoming request.

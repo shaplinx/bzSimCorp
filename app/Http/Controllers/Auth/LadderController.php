@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\API\V1\ApiController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Ladder\Ladder;
 
 
-class LadderController extends ApiController
+class LadderController extends Controller
 {
     function getAllRoles() {
         return $this->sendResponse(__("Fetched Successfully"),array_values(Ladder::$roles));

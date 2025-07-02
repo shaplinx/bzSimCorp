@@ -1,12 +1,11 @@
 <?php
-namespace App\Http\Controllers\API\V1\Auth;
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\API\V1\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-
-class LoginController extends ApiController
+use App\Http\Controllers\Controller;
+class LoginController extends Controller
 {
     public function __invoke(Request $request)
     {

@@ -1,8 +1,14 @@
 <?php
 
-use App\Http\Controllers\API\V1\Auth\TokenBasedAuth;
+use App\Http\Controllers\Auth\TokenBasedAuth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\V1\Auth\LadderController;
+use App\Http\Controllers\Auth\LadderController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Documents\InstitutionController;
+use App\Http\Controllers\Documents\ClassificationController;
+use App\Http\Controllers\Documents\LetterController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,17 +21,23 @@ use App\Http\Controllers\API\V1\Auth\LadderController;
  */
 
 Route::prefix("v1")->group(function () {
-    Route::post('auth/login', \App\Http\Controllers\API\V1\Auth\LoginController::class)->middleware('guest');
-    Route::post('auth/create-token',  [TokenBasedAuth::class, 'createToken'])->middleware('guest');
+    Route::post('auth/login', LoginController::class)->middleware('guest');
+    Route::post('auth/create-token', [TokenBasedAuth::class, 'createToken'])->middleware('guest');
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('auth/user', App\Http\Controllers\API\V1\Auth\GetCurrentUser::class);
-        Route::post('auth/logout', App\Http\Controllers\API\V1\Auth\LogoutController::class);
+        Route::get('auth/user', App\Http\Controllers\Auth\GetCurrentUser::class);
+        Route::post('auth/logout', App\Http\Controllers\Auth\LogoutController::class);
         Route::post('auth/revoke-token', [TokenBasedAuth::class, 'revokeToken']);
-        Route::get('auth/all-roles', [LadderController::class, "getAllRoles"] );
-        Route::get('auth/all-permissions', [LadderController::class, "getAllPermissions"] );
+        Route::get('auth/all-roles', [LadderController::class, "getAllRoles"]);
+        Route::get('auth/all-permissions', [LadderController::class, "getAllPermissions"]);
+        Route::resource('user', UserController::class);
 
-        Route::resource('user', App\Http\Controllers\API\V1\UserController::class);
+        Route::prefix('documents')->group(function () {
+            Route::apiResource('institutions', InstitutionController::class);
+            Route::apiResource('classifications', ClassificationController::class);
+            Route::apiResource('letters', LetterController::class);
+        });
+
 
     });
 
