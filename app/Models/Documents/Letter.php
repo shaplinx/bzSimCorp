@@ -7,8 +7,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Storage;
 
 class Letter extends Model
 {
@@ -143,16 +141,6 @@ class Letter extends Model
         }
 
         return 'draft';
-    }
-
-    /**
-     * generate url from storage.
-     */
-    protected function filePath(): Attribute
-    {
-        return Attribute::make(
-            get: fn(mixed $value, array $attributes) => $value ? Storage::url($value) : null
-        );
     }
 
 

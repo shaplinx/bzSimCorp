@@ -10,9 +10,10 @@ use App\Http\Requests\IndexRequest;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Database\Eloquent\Builder;
 use App\Rules\ColumnExists;
-
+use Illuminate\Support\Facades\Auth;
 
 class LetterController extends Controller
 {
@@ -84,7 +85,7 @@ class LetterController extends Controller
             }
 
             if ($request->hasFile('file')) {
-                $letter->file_path = $request->file('file')->store("letters", 'public');
+                $letter->file_path = $request->file('file')->store("letters", 'local');
             }
 
             $letter->save();
@@ -117,9 +118,9 @@ class LetterController extends Controller
                 $data['voided_at'] = null;
             }
             if ($request->hasFile('file')) {
-                $oldFile = $letter->getRawOriginal('file_path');
+                $oldFile = $letter->file_path;
 
-                $data['file_path'] = $request->file('file')->store("letters", 'public');
+                $data['file_path'] = $request->file('file')->store("letters", 'local');
             }
 
             $letter->fill($data);
@@ -127,7 +128,7 @@ class LetterController extends Controller
 
             $letter->save();
             if (isset($oldFile)) {
-                Storage::disk('public')->delete($oldFile);
+                Storage::disk('local')->delete($oldFile);
             }
 
             return $letter;
@@ -141,9 +142,22 @@ class LetterController extends Controller
     {
         $letter->delete();
         if ($path = $letter->getRawOriginal('file_path')) {
-            Storage::disk('public')->delete($path);
+            Storage::disk('local')->delete($path);
         }
 
         return $this->sendResponse(__('Deleted Successfully'));
+    }
+
+    public function download(Letter $letter)
+    {
+        if (!Auth::check() && !$letter->public) {
+            abort(401, "Unauthorized");
+        }
+        if (!$letter->file_path || !Storage::disk('local')->exists($letter->file_path)) {
+            abort(404, 'File not found');
+        }
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = Storage::disk('local');
+        return $storage->download($letter->file_path);
     }
 }

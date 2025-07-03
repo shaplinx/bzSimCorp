@@ -23,6 +23,8 @@ use App\Http\Controllers\Documents\LetterController;
 Route::prefix("v1")->group(function () {
     Route::post('auth/login', LoginController::class)->middleware('guest');
     Route::post('auth/create-token', [TokenBasedAuth::class, 'createToken'])->middleware('guest');
+    Route::get('documents/letters/{letter}/download', [LetterController::class, 'download']);
+
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('auth/user', App\Http\Controllers\Auth\GetCurrentUser::class);
@@ -37,9 +39,5 @@ Route::prefix("v1")->group(function () {
             Route::apiResource('classifications', ClassificationController::class);
             Route::apiResource('letters', LetterController::class);
         });
-
-
     });
-
-
 });
