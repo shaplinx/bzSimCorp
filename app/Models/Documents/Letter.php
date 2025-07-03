@@ -7,7 +7,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 
 class Letter extends Model
 {
@@ -27,18 +28,20 @@ class Letter extends Model
         'letter_date',
         'file_path',
         "voided_at",
-        "issued_at"
+        "issued_at",
+        "public",
     ];
     protected $casts = [
         'letter_date' => 'datetime',
         'issued_at' => 'datetime',
         'voided_at' => 'datetime',
+        'public' => 'boolean',
     ];
 
     protected static function booted()
     {
         parent::booted();
-        
+
         static::deleting(function ($model) {
             if ($model->status !== "draft") abort(400, "Cannot delete issued or voided letter");
         });
@@ -52,7 +55,7 @@ class Letter extends Model
                 $model->created_by = Auth::id();
             }
             if (empty($model->sn) && ($model->status === 'issued')) {
-                    $model->sn =$model->getNextSequenceNumber();
+                $model->sn = $model->getNextSequenceNumber();
             }
         });
 
@@ -81,7 +84,12 @@ class Letter extends Model
                 $model->sn = $model->getNextSequenceNumber();
             }
 
-            // ❌ 4. Prevent any mutation to issued letter unless voiding
+            // ❌ 4. Prevent any mutation to voided letter.
+            if ($wasVoided) {
+                abort(400, 'Cannot update a voided letter.');
+            }
+
+            // ❌ 5. Prevent any mutation to issued letter unless voiding
             if ($wasIssued) {
                 $dirty = collect($model->getDirty())->except(['updated_at'])->keys()->toArray();
 
@@ -91,13 +99,7 @@ class Letter extends Model
                     if (!empty($unexpectedChanges)) {
                         abort(400, 'Only voiding is allowed. Cannot modify other fields on issued letter.');
                     }
-                } else {
-                    if ($wasVoided) {
-                        abort(400, 'Cannot update a voided letter.');
-                    } else {
-                        abort(400, 'Cannot update an issued letter unless voiding.');
-                    }
-                }
+                } else abort(400, 'Cannot update an issued letter unless voiding.');
             }
         });
     }
@@ -142,6 +144,17 @@ class Letter extends Model
 
         return 'draft';
     }
+
+    /**
+     * generate url from storage.
+     */
+    protected function filePath(): Attribute
+    {
+        return Attribute::make(
+            get: fn(mixed $value, array $attributes) => $value ? Storage::url($value) : null
+        );
+    }
+
 
     /**
      * Extract month from letter_date.
@@ -192,7 +205,8 @@ class Letter extends Model
         $date = Carbon::parse($this->letter_date);
 
         $query = self::where('institution_id', $this->institution_id)
-            ->where('classification_id', $this->classification_id);
+            ->where('classification_id', $this->classification_id)
+            ->lockForUpdate();
 
         // Apply reset interval condition
         switch ($resetPeriod) {

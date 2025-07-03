@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\ColumnExists;
 use Illuminate\Foundation\Http\FormRequest;
 
 class IndexRequest extends FormRequest
@@ -26,19 +25,11 @@ class IndexRequest extends FormRequest
         return [
             "search" => ["nullable", "string"],
             "orderBy" => ["nullable", "required_array_keys:column,direction"],
-            "orderBy.column" => ["required_with:orderBy", new ColumnExists("users")],
             "orderBy.direction" => ["required_with:orderBy", "in:asc,desc"],
             "pageSize" => ["nullable", "numeric"],
+            "dateAfter" => ["nullable", "date", 'date_format:Y-m-d'],
+            "dateBefore" => ["nullable", "date", 'date_format:Y-m-d'],
         ];
     }
 
-    /**
-     * Handle a passed validation attempt.
-     */
-    protected function passedValidation(): void
-    {
-        if ($this->has('orderBy')) {
-            $this->merge(['orderBy' => $this->orderBy["column"] .'|'. $this->orderBy["direction"] ]);
-        }
-    }
 }

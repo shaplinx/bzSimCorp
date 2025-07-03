@@ -15,12 +15,11 @@ return new class extends Migration {
 
             $table->foreignId('institution_id')->constrained('institutions')->onDelete('restrict');
             $table->foreignId('classification_id')->constrained('classifications')->onDelete('restrict');
-
             $table->unsignedInteger('sn')->nullable();
             $table->string('subject');
+            $table->boolean('public')->default(false);
             $table->string('recipient')->nullable();
             $table->date('letter_date');
-
             $table->string('file_path')->nullable();
             $table->timestamp('voided_at')->nullable();
             $table->timestamp('issued_at')->nullable();

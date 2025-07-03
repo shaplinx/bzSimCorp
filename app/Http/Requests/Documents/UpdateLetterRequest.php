@@ -16,13 +16,13 @@ class UpdateLetterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'institution_id' => 'required|exists:institutions,id',
-            'classification_id' => 'required|exists:classifications,id',
-            'subject' => 'required|string|max:255',
-            'recipient' => 'nullable|string|max:255',
-            'letter_date' => 'required|date',
-            'file_path' => 'nullable|string|max:255',
-            'status' => 'required|in:draft,issued,void'
+            'institution_id' => 'exists:institutions,id',
+            'classification_id' => 'exists:classifications,id',
+            'subject' => 'string|max:255',
+            'recipient' => 'string|max:255',
+            'letter_date' => 'date',
+            'status' => 'in:draft,issued,void',
+            'file' =>[$this->letter->file_path ? 'nullable' : 'required_unless:status,draft', 'file', 'mimes:pdf,doc,docx', 'max:4096'],
 
         ];
     }
