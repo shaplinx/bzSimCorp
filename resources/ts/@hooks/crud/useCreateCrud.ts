@@ -4,7 +4,7 @@ import { reactive } from "vue"
 import { getNode } from '@formkit/core'
 import { ButtonProps } from "@/components/@types/button"
 import { faChevronLeft, faPaperPlane, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
-import { AxiosError, AxiosResponse } from "axios"
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 
 
 export type CreateCrudConfig<T> = {
@@ -13,6 +13,7 @@ export type CreateCrudConfig<T> = {
     primaryKey?:string,
     formButtons?:ButtonProps[],
     resets?: ("formButtons")[],
+    createRequestConf?: AxiosRequestConfig,
     indexRoute: RouteLocationNamedRaw,
     editRoute: RouteLocationNamedRaw,
     reactives?: {
@@ -52,7 +53,7 @@ export function useCreateCrud<T = any>(config: CreateCrudConfig<T>) {
             icon: faPaperPlane,
             label:"Submit",
             on: {
-                click: () => getNode('CreateUserForm')?.submit()
+                click: () => getNode(config.formId)?.submit()
             }
         },
         {
@@ -81,7 +82,7 @@ export function useCreateCrud<T = any>(config: CreateCrudConfig<T>) {
         getNode(formId)?.clearErrors()
         reactives.isSubmitting = true
         return new Promise((resolve,reject) => {
-            resources.create?.({data: proccessCreateData(data)})
+            resources.create?.({data: proccessCreateData(data), ...(config.createRequestConf ?? {})})
             .then(res => {
                 config.onCreateSuccess?.(res)
                 reactives.model = res.data.data as any

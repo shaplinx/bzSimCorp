@@ -19,9 +19,8 @@ class StoreLetterRequest extends FormRequest
             'subject' => 'required|string|max:255',
             'recipient' => 'nullable|string|max:255',
             'letter_date' => 'required|date',
-            'file_path' => 'nullable|string|max:255',
             'status' => 'required|in:draft,issued',
-            'file' => 'required_if:status,issued|nullable|file|mimes:pdf,doc,docx|max:4096',
+            'file' => 'file|mimes:pdf,doc,docx|max:4096',
         ];
     }
 

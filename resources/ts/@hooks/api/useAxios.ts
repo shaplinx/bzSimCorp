@@ -66,6 +66,11 @@ axiosInstance.interceptors.response.use(
             router.push({ name: "SignIn" })
         }
 
+        
+        if (error.response?.status === 404) {
+            router.push({ name: "404" })
+        }
+
 
 
         // Handle other errors

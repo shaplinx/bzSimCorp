@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Requests\IndexRequest;
@@ -11,6 +10,8 @@ use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -21,6 +22,9 @@ class UserController extends Controller
     {
 
         Gate::authorize('viewAny', User::class);
+        $request->validate([
+            "orderBy.column" => ["required_with:orderBy", Rule::in(Schema::getColumnListing('users'))],
+        ]);
         return $this->sendResponseWithPaginatedData(
             User::when($request->search, function (Builder $query, string $search) {
                 $query->where(function (Builder $q) use($search) {
@@ -28,9 +32,8 @@ class UserController extends Controller
                       ->orWhere('email', 'like', "%{$search}%");
                 });
             })
-            ->when($request->orderBy, function (Builder $query, string $orderBy) {
-                $orderBy = explode('|',$orderBy);
-                $query->orderBy($orderBy[0],$orderBy[1]);
+            ->when($request->orderBy, function (Builder $query, array $orderBy) {
+                $query->orderBy($orderBy['column'],$orderBy['direction']);
             })
             ->paginate($request->pageSize ?? 10)
         );

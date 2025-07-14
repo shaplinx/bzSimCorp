@@ -15,7 +15,7 @@ class Letter extends Model
     public $incrementing = false;
     protected $keyType = 'string'; // UUID
 
-    protected $appends = ['formatted_number', "status"];
+    protected $appends = [ "status"];
 
     protected $fillable = [
         'id',
@@ -30,7 +30,6 @@ class Letter extends Model
         "public",
     ];
     protected $casts = [
-        'letter_date' => 'datetime',
         'issued_at' => 'datetime',
         'voided_at' => 'datetime',
         'public' => 'boolean',
@@ -54,6 +53,7 @@ class Letter extends Model
             }
             if (empty($model->sn) && ($model->status === 'issued')) {
                 $model->sn = $model->getNextSequenceNumber();
+                $model->letter_number = $model->generateLetterNumber();
             }
         });
 
@@ -80,6 +80,8 @@ class Letter extends Model
             if ($originalStatus === 'draft' && $model->issued_at && !$model->sn) {
 
                 $model->sn = $model->getNextSequenceNumber();
+                $model->letter_number = $model->generateLetterNumber();
+
             }
 
             // ❌ 4. Prevent any mutation to voided letter.
@@ -90,14 +92,17 @@ class Letter extends Model
             // ❌ 5. Prevent any mutation to issued letter unless voiding
             if ($wasIssued) {
                 $dirty = collect($model->getDirty())->except(['updated_at'])->keys()->toArray();
-
+                $allowedKeys = [];
+                if(!$original['file_path'] && in_array('file_path',$dirty)) {
+                    array_push($allowedKeys, "file_path");
+                }
                 if ($isVoiding) {
-                    $allowedKeys = ['voided_at'];
-                    $unexpectedChanges = array_diff($dirty, $allowedKeys);
-                    if (!empty($unexpectedChanges)) {
-                        abort(400, 'Only voiding is allowed. Cannot modify other fields on issued letter.');
-                    }
-                } else abort(400, 'Cannot update an issued letter unless voiding.');
+                    array_push($allowedKeys, 'voided_at');
+                }
+                $unexpectedChanges = array_diff($dirty, $allowedKeys);
+                if (!empty($unexpectedChanges)) {
+                        abort(400, 'Only voiding and uploading file the first time is allowed. Cannot modify other fields on issued letter.');
+                }
             }
         });
     }
@@ -171,7 +176,7 @@ class Letter extends Model
     /**
      * Generate formatted letter number using institution template.
      */
-    public function getFormattedNumberAttribute(): string
+    public function generateLetterNumber(): string
     {
         if (!$this->sn) return "";
         return $this->institution->formatLetterNumber([

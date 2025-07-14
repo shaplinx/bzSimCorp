@@ -18,7 +18,7 @@
                             skipTransition
                             theme="sidebar"
                         >
-                            <DesktopNavItem :item="item" @change:is-active="(val) => onChildActive(val, key)"
+                            <DesktopNavItem v-tooltip="item.label" :item="item" @change:is-active="(val) => onChildActive(val, key)"
                                 @click="setActiveParent(key)"></DesktopNavItem>
                             <template v-if="item.child" #popper>
                                 <div class="h-screen w-52 bg-base-100 flex flex-col">

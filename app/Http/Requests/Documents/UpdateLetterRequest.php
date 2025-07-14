@@ -22,7 +22,7 @@ class UpdateLetterRequest extends FormRequest
             'recipient' => 'string|max:255',
             'letter_date' => 'date',
             'status' => 'in:draft,issued,void',
-            'file' =>[$this->letter->file_path ? 'nullable' : 'required_unless:status,draft', 'file', 'mimes:pdf,doc,docx', 'max:4096'],
+            'file' =>['nullable', 'file', 'mimes:pdf,doc,docx', 'max:4096'],
 
         ];
     }

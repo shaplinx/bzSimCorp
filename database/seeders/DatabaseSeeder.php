@@ -24,5 +24,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@example.com',
         ])->roles()->updateOrCreate(['role' => 'standard']);
 
+        $this->call([
+            LetterSeeder::class
+        ]);
+
+
     }
 }

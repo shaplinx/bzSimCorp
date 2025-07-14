@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('institution_id')->constrained('institutions')->onDelete('restrict');
             $table->foreignId('classification_id')->constrained('classifications')->onDelete('restrict');
             $table->unsignedInteger('sn')->nullable();
+            $table->string('letter_number')->nullable();
             $table->string('subject');
             $table->boolean('public')->default(false);
             $table->string('recipient')->nullable();

@@ -2,42 +2,30 @@
 import Card from '@/components/cards/Card.vue';
 import CardBody from '@/components/cards/CardBody.vue';
 import CardTitle from '@/components/cards/CardTitle.vue';
-import { useUserFormSchema } from '@/forms/schemas/userFormSchema';
+import { useInstitutionFormSchema } from '@/forms/schemas/documents/institutionFormSchema';
 import { useAuthStore } from '@/stores/authStore';
 import { FormKit, FormKitSchema } from '@formkit/vue';
-import { useUserResources } from '@/resources';
-import { getNode } from '@formkit/core'
-import { ref } from 'vue';
+import { useInstitutionResources } from '@/resources';
 import { useCreateCrud } from '@/@hooks/crud/useCreateCrud';
 import CardActions from '@/components/cards/CardActions.vue';
 
-const auth = useAuthStore()
 
-const formSchema = useUserFormSchema({
-    route: "create",
-    authRole: auth.user.roles.map((role:any) => role.role)
-})
+const formSchema = useInstitutionFormSchema({route: "create"})
 
 const {
         editRoute,
-        primaryKey,
         router,
         reactives,
         formButtons,
         createSubmit,
     } = useCreateCrud({
-        formId:"CreateUserForm",
-        resources:useUserResources(),
-        indexRoute: {name:"IndexUser"},
-        editRoute: {name:"EditUser"},
+        formId:"CreateInstitutionForm",
+        resources:useInstitutionResources(),
+        indexRoute: {name:"IndexInstitution"},
+        editRoute: {name:"EditInstitution"},
         onCreateSuccess: (res) =>  {
             router.push({...editRoute, params: {id:res.data.data?.id}})
         },
-        proccessCreateData: (data) => {
-            return Object.assign({},data,{
-                roles: data.roles?.map(r => r.value)
-            })
-        }
     })
 
 </script>
@@ -48,7 +36,7 @@ const {
     <Card variant="base">
         <CardBody>
             <CardTitle>{{ $route.meta.title }}</CardTitle>
-            <FormKit :disabled="reactives.isSubmitting" type="form" @submit="createSubmit" :actions="false" id="CreateUserForm">
+            <FormKit :disabled="reactives.isSubmitting" type="form" @submit="createSubmit" :actions="false" id="CreateInstitutionForm">
                 <FormKitSchema :schema="formSchema"></FormKitSchema>
             </FormKit>
             <CardActions>

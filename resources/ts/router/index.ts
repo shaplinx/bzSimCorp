@@ -6,15 +6,10 @@ import SigninView from '@/views/Authentication/SigninView.vue'
 // import SignupView from '@/views/Authentication/SignupView.vue'
 // import CalendarView from '@/views/CalendarView.vue'
 // import BasicChartView from '@/views/Charts/BasicChartView.vue'
-// import FormElementsView from '@/views/Forms/FormElementsView.vue'
-// import FormLayoutView from '@/views/Forms/FormLayoutView.vue'
-// import SettingsView from '@/views/Pages/SettingsView.vue'
-// import ProfileView from '@/views/ProfileView.vue'
-import DataTable from '@/views/DataTable/TablesView.vue'
 import FormShowcase from '@/views/Forms/FormShowcase.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
-// import AlertsView from '@/views/UiElements/AlertsView.vue'
-// import ButtonsView from '@/views/UiElements/ButtonsView.vue'
+import GenericError from '@/views/Errors/GenericError.vue'
+
 
 const routes = [
     {
@@ -26,6 +21,16 @@ const routes = [
         }
     },
     {
+        path: "/error/404",
+        component: GenericError,
+        name: "404",
+        meta: {
+            title: 'Page Not Found',
+            code: '404',
+            message: "Sorry, the page you're looking for doesn't exist or has been moved."
+        },
+    },
+    {
         path: '/',
         name: 'Root',
         component: DashboardLayout,
@@ -35,29 +40,29 @@ const routes = [
         },
         children: [
             {
-                path:"dashboard",
+                path: "dashboard",
                 component: () => import("@/views/Dashboard/ECommerceView.vue"),
-                name:"Dashboard",
+                name: "Dashboard",
                 meta: {
                     title: 'Dashboard'
                 }
             },
             {
-                path: 'data-table',
-                name: 'DataTable',
+                path: 'users',
+                name: 'users',
                 component: RouterView,
-                redirect:"/data-table/index",
+                redirect: "/users/index",
                 meta: {
                     title: 'Tables'
                 },
-                children:[
+                children: [
                     {
                         path: 'index',
-                        name: 'UserIndex',
-                        component: () => import("@/views/DataTable/TablesView.vue"),
+                        name: 'IndexUser',
+                        component: () => import("@/views/User/IndexUser.vue"),
                         meta: {
                             layout: 'DashboardLayout',
-                            title: 'Users Index / CRUD Demo'
+                            title: 'Users Index'
                         }
                     },
                     {
@@ -81,98 +86,136 @@ const routes = [
                 ]
             },
             {
-                path: '/forms',
-                name: 'FormShowcase',
-                component: FormShowcase,
+                path: 'documents',
+                name: 'documents',
+                component: RouterView,
+                redirect: "/documents/index",
                 meta: {
-                    title: 'Form Showcase'
-                }
+                    title: 'Tables'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'IndexUser',
+                        component: () => import("@/views/User/IndexUser.vue"),
+                        meta: {
+                            layout: 'DashboardLayout',
+                            title: 'Users Index'
+                        }
+                    },
+                    {
+                        path: 'institutions',
+                        name: 'institutions',
+                        component: RouterView,
+                        redirect: "/documents/institutions/index",
+                        children: [
+                            {
+                                path: 'index',
+                                name: 'IndexInstitution',
+                                component: () => import("@/views/Docs/Institution/IndexInstitution.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Document Institutions Index'
+                                }
+                            },
+                            {
+                                path: 'create',
+                                name: 'CreateInstitution',
+                                component: () => import("@/views/Docs/Institution/CreateInstitution.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Create Document Institutions'
+                                }
+                            },
+                            {
+                                path: 'edit/:id',
+                                name: 'EditInstitution',
+                                component: () => import("@/views/Docs/Institution/EditInstitution.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Edit Document Institutions'
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        path: 'classifications',
+                        name: 'classifications',
+                        component: RouterView,
+                        redirect: "/documents/classifications/index",
+                        children: [
+                            {
+                                path: 'index',
+                                name: 'IndexClassification',
+                                component: () => import("@/views/Docs/Classification/IndexClassification.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Document Classifications Index'
+                                }
+                            },
+                            {
+                                path: 'create',
+                                name: 'CreateClassification',
+                                component: () => import("@/views/Docs/Classification/CreateClassification.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Create Document Classifications'
+                                }
+                            },
+                            {
+                                path: 'edit/:id',
+                                name: 'EditClassification',
+                                component: () => import("@/views/Docs/Classification/EditClassification.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Edit Document Classifications'
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        path: 'letters',
+                        name: 'letters',
+                        component: RouterView,
+                        redirect: "/documents/letters/index",
+                        children: [
+                            {
+                                path: 'index',
+                                name: 'IndexLetter',
+                                component: () => import("@/views/Docs/Letter/IndexLetter.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Document Letters Index'
+                                }
+                            },
+                            {
+                                path: 'create',
+                                name: 'CreateLetter',
+                                component: () => import("@/views/Docs/Letter/CreateLetter.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Create Document Letters'
+                                }
+                            },
+                            {
+                                path: 'edit/:id',
+                                name: 'EditLetter',
+                                component: () => import("@/views/Docs/Letter/EditLetter.vue"),
+                                meta: {
+                                    layout: 'DashboardLayout',
+                                    title: 'Edit Document Letters'
+                                }
+                            }
+                        ]
+                    },
+                ]
             },
         ]
     },
-    //   {
-    //     path: '/calendar',
-    //     name: 'calendar',
-    //     component: CalendarView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Calendar'
-    //     }
-    //   },
-    //   {
-    //     path: '/profile',
-    //     name: 'profile',
-    //     component: ProfileView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Profile'
-    //     }
-    //   },
-    //   {
-    //     path: '/forms/form-elements',
-    //     name: 'formElements',
-    //     component: FormElementsView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Form Elements'
-    //     }
-    //   },
-    //   {
-    //     path: '/forms/form-layout',
-    //     name: 'formLayout',
-    //     component: FormLayoutView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Form Layout'
-    //     }
-    //   },
-
-    //   {
-    //     path: '/pages/settings',
-    //     name: 'settings',
-    //     component: SettingsView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Settings'
-    //     }
-    //   },
-    //   {
-    //     path: '/charts/basic-chart',
-    //     name: 'basicChart',
-    //     component: BasicChartView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Basic Chart'
-    //     }
-    //   },
-    //   {
-    //     path: '/ui-elements/alerts',
-    //     name: 'alerts',
-    //     component: AlertsView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Alerts'
-    //     }
-    //   },
-    //   {
-    //     path: '/ui-elements/buttons',
-    //     name: 'buttons',
-    //     component: ButtonsView,
-    //     meta: {
-    //       layout: 'DashboardLayout',
-    //       title: 'Buttons'
-    //     }
-    //   },
-
-    //   {
-    //     path: '/auth/signup',
-    //     name: 'signup',
-    //     component: SignupView,
-    //     meta: {
-    //       layout: 'DefaultLayout',
-    //       title: 'Signup'
-    //     }
-    //   }
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/error/404',
+    },
 ]
 
 const router = createRouter({
@@ -189,13 +232,13 @@ router.beforeEach(async (to, from, next) => {
     if (authStore.attemptCount === 0) {
         await authStore.attempt()
     }
-    if(authStore.isAuthenticated){
-        if (to.name !== "SignIn" ) {
+    if (authStore.isAuthenticated) {
+        if (to.name !== "SignIn") {
             return next()
         }
         return next({ name: "Dashboard" })
     }
-    if (to.name !== "SignIn" ) {
+    if (to.name !== "SignIn") {
         return ({ name: "SignIn" })
     }
     return next()

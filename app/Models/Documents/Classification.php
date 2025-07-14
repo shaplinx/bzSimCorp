@@ -40,7 +40,7 @@ class Classification extends Model
             if (in_array($current->id, $visited)) {
                 break; // cycle detected
             }
-            $codes = $codes . $current->classification_separator . $current->code;
+            $codes =  $current->code. $current->classification_separator .$codes ;
             $current = $current->parent;
         }
 

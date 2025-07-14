@@ -22,6 +22,7 @@ export type CrudConfig = {
         delete?: Method
     },
     actions?: Action[],
+    overrides?: CrudResourcesInstance
 
 }
 
@@ -50,6 +51,7 @@ export type CrudResourcesInstance<T = any> = {
     create?: (config?: AxiosRequestConfig) => Promise<AxiosResponse<SuccessResponse<T>>>;
     update?: (identifier: string | number, config?: AxiosRequestConfig) => Promise<AxiosResponse<SuccessResponse<T>>>;
     delete?: (identifier: string | number, config?: AxiosRequestConfig) => Promise<AxiosResponse<SuccessResponse<T>>>;
+    [key:string] : any
 }
 
 export function useCrud<T = any>(config: CrudConfig): CrudResourcesInstance<T> {
@@ -152,6 +154,8 @@ export function useCrud<T = any>(config: CrudConfig): CrudResourcesInstance<T> {
             })
         }
     }
+
+    Object.assign(resources, config.overrides?? {})
 
     return resources
 }

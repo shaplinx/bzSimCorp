@@ -2,20 +2,17 @@
 import Card from '@/components/cards/Card.vue';
 import CardBody from '@/components/cards/CardBody.vue';
 import CardTitle from '@/components/cards/CardTitle.vue';
-import { useUserFormSchema } from '@/forms/schemas/userFormSchema';
+import { useInstitutionFormSchema } from '@/forms/schemas/documents/institutionFormSchema';
 import { useAuthStore } from '@/stores/authStore';
 import { FormKit, FormKitSchema } from '@formkit/vue';
-import { useUserResources } from '@/resources';
+import { useInstitutionResources } from '@/resources';
 import SpinnerOverlay from '@/components/loader/SpinnerOverlay.vue';
 import CardActions from '@/components/cards/CardActions.vue';
 import { useEditCrud } from '@/@hooks/crud/useEditCrud';
 
 
-const auth = useAuthStore()
-
-const formSchema = useUserFormSchema({
-    route: "edit",
-    authRole: auth.user.roles.map((role:any) => role.role)
+const formSchema = useInstitutionFormSchema({
+    route: "edit"
 })
 
 const {
@@ -23,24 +20,17 @@ const {
         formButtons,
         updateSubmit,
         fetchOne
-} = useEditCrud<App.Models.User>({
-    resources:useUserResources(),
-    indexRoute: {name:"IndexUser"},
-    formId:"EditUserForm",
-    proccessFetchData: (data) => {
-        return Object.assign({},data,{
-        roles: data?.roles?.map(r => ({ value: r.role, label: r.role }))
-    })},
-    proccessUpdateData: (data) => {
-        return Object.assign({},data,{
-        roles: data?.roles?.map(r => r.value)
-    })},
+} = useEditCrud<App.Models.DocumentsInstitution>({
+    resources:useInstitutionResources(),
+    indexRoute: {name:"IndexInstitution"},
+    formId:"EditInstitutionForm",
     generateDeleteObject: (data) => {
         return {
                 id: String(data.id),
                 name: data.name,
-                email: data.email,
-                role: data.roles?.map((role: any) => role.role).join(", ") ?? ''
+                code: data.code,
+                reset_sn_period: data.reset_sn_period,
+                sn_template: data.sn_template,
             }
     }
 })
@@ -55,7 +45,7 @@ fetchOne();
         <SpinnerOverlay :show="reactives.isFetching"></SpinnerOverlay>
         <CardBody>
             <CardTitle>{{ $route.meta.title }}</CardTitle>
-            <FormKit :disabled="reactives.isSubmitting" type="form" @submit="updateSubmit" :actions="false" id="EditUserForm">
+            <FormKit :disabled="reactives.isSubmitting" type="form" @submit="updateSubmit" :actions="false" id="EditInstitutionForm">
                 <FormKitSchema :schema="formSchema"></FormKitSchema>
             </FormKit>
         <CardActions >

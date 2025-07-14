@@ -10,7 +10,7 @@ export const useAuthStore = defineStore('sidebar', () => {
 
     const login = (credentials: { email: string, password: string }) => {
         return new Promise((resolve,reject) => {
-            return axios.post('/auth/login', credentials)
+            axios.post('/auth/login', credentials)
             .then(( res :AxiosResponse) => {
                 isAuthenticated.value =true
                 resolve(res)

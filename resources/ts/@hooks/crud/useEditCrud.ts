@@ -6,7 +6,7 @@ import { ButtonProps } from "@/components/@types/button"
 import { faChevronLeft, faPaperPlane, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
 import { useModal } from "vue-final-modal"
 import DeleteConfirmationModal from "@/components/containers/DeleteConfirmationModal.vue"
-import { AxiosError, AxiosResponse } from "axios"
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios"
 
 
 export type EditCrudConfig<T> = {
@@ -16,6 +16,7 @@ export type EditCrudConfig<T> = {
     formButtons?:ButtonProps[],
     resets?: ("formButtons")[],
     indexRoute: RouteLocationNamedRaw
+    updateRequestConf?: AxiosRequestConfig,
     reactives?: {
         isSubmitting?:boolean,
         isFetching?: boolean,
@@ -59,7 +60,7 @@ export function useEditCrud<T = any>(config: EditCrudConfig<T>) {
             icon: faPaperPlane,
             label:"Submit",
             on: {
-                click: () => getNode('EditUserForm')?.submit()
+                click: () => getNode(config.formId)?.submit()
             }
         },
         {
@@ -85,10 +86,12 @@ export function useEditCrud<T = any>(config: EditCrudConfig<T>) {
                             },
                             onConfirm: (deleting) => {
                                 deleting.value = true
-                                deleteFunction().finally(()=> {
+                                deleteFunction().then(()=> {
+                                    router.push(indexRoute)
+                                })
+                                .finally(() => {
                                     deleting.value = false
                                     close()
-                                    router.push(indexRoute)
                                 })
                             },
                         }
@@ -115,7 +118,7 @@ export function useEditCrud<T = any>(config: EditCrudConfig<T>) {
         getNode(formId)?.clearErrors()
         reactives.isSubmitting = true
         return new Promise((resolve,reject) => {
-            resources.update?.(route.params.id as string, {data: proccessUpdateData(data)})
+            resources.update?.(route.params.id as string, {data: proccessUpdateData(data), ...(config.updateRequestConf ?? {})})
             .then(res => {
                 config.onUpdateSuccess?.(res)
                 getNode(formId)?.input(proccessFetchData(res.data.data as T))

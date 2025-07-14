@@ -33,7 +33,9 @@ class LetterController extends Controller
                     $query->where(function (Builder $q) use ($search) {
                         $q->where('subject', 'like', "%{$search}%")
                             ->orWhere('recipient', 'like', "%{$search}%")
+                            ->orWhere('letter_number', 'like', "%{$search}%")
                             ->orWhere('sn', 'like', "%{$search}%");
+
                     });
                 })
                 ->when($request->letterPublic, function (Builder $query, bool $public) {
@@ -84,6 +86,10 @@ class LetterController extends Controller
                 $letter->void = Carbon::now();
             }
 
+            if ($request->input('status') === "issued") {
+                $letter->issued_at = Carbon::now();
+            }
+
             if ($request->hasFile('file')) {
                 $letter->file_path = $request->file('file')->store("letters", 'local');
             }
@@ -106,11 +112,11 @@ class LetterController extends Controller
         $letter = DB::transaction(function () use ($request, $letter) {
             $data = $request->validated();
 
-            if ($request->input('status') === "void") {
+            if (!$letter->voided_at && $request->input('status') === "void") {
                 $data['voided_at'] = now();
             }
 
-            if ($request->input('status') === "issued") {
+            if (!$letter->issued_at && $request->input('status') === "issued") {
                 $data['issued_at'] = now();
             }
             if ($request->input('status') === "draft") {
