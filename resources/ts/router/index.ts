@@ -5,8 +5,8 @@ import { useAuthStore } from "@/stores/authStore"
 import SigninView from '@/views/Authentication/SigninView.vue'
 // import SignupView from '@/views/Authentication/SignupView.vue'
 // import CalendarView from '@/views/CalendarView.vue'
-// import BasicChartView from '@/views/Charts/BasicChartView.vue'
-import FormShowcase from '@/views/Forms/FormShowcase.vue'
+
+
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import GenericError from '@/views/Errors/GenericError.vue'
 
@@ -41,11 +41,32 @@ const routes = [
         children: [
             {
                 path: "dashboard",
-                component: () => import("@/views/Dashboard/ECommerceView.vue"),
+                component: RouterView,
+                redirect: "/dashboard/main",
+
                 name: "Dashboard",
                 meta: {
                     title: 'Dashboard'
-                }
+                },
+                children: [
+                    {
+                        path: "main",
+                        component: () => import("@/views/Dashboard/MainDashboard.vue"),
+
+                        name: "MainDashboard",
+                        meta: {
+                            title: 'Main Dashboard'
+                        }
+                    },
+                                        {
+                        path: "documents",
+                        component: () => import("@/views/Dashboard/DocumentDashboard.vue"),
+                        name: "DocumentDashboard",
+                        meta: {
+                            title: 'Documents Dashboard'
+                        }
+                    },
+                ]
             },
             {
                 path: 'users',

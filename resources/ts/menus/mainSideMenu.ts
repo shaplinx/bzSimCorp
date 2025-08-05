@@ -1,11 +1,26 @@
 import { faGaugeHigh, faUsers, faFolderTree, faEnvelope, faFolderOpen, faInstitution, faFolder } from "@fortawesome/free-solid-svg-icons";
 
 export const mainSideMenu: Base.Component.Menu.MenuItem[] = [
-  {
+    {
     id: "dashboard",
     icon: faGaugeHigh,
     label: "Dashboard",
-    to: { name: "Dashboard" }
+    to: { name: "Dashboard" },
+    child: [
+      {
+        id: "mainDashboard",
+        icon: faGaugeHigh,
+        label: "Main Dashboard",
+        to: { name: "MainDashboard" },
+      },
+            {
+        id: "documentDashboard",
+        icon: faFolderOpen,
+        label: "Documents Dashboard",
+        to: { name: "DocumentDashboard" },
+      },
+      
+    ]
   },
   {
     id: "user",

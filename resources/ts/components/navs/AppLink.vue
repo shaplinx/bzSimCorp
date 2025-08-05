@@ -1,16 +1,38 @@
 <template>
-    <a v-if="isExternalLink" v-bind="$attrs" :href="to" target="_blank">
-        <slot />
+  <span>
+    <a
+      v-if="isExternalLink"
+      v-bind="$attrs"
+      :href="to"
+      target="_blank"
+    >
+      <slot />
     </a>
-    <router-link v-else v-bind="$props" custom v-slot="{ isActive, href, navigate, isExactActive }">
-        <a v-bind="$attrs" :href="href" @click="customNavigate" :class="[
-            isActive ? activeClass : inactiveClass,
-            isExactActive ? exactActiveClass : exactInactiveClass,
-        ]">
-            <slot :isExternalLink="isExternalLink" :href="href" :navigate="customNavigate" :isActive="isActive"
-                :isExactActive="isExactActive"> </slot>
-        </a>
+    <router-link
+      v-else
+      v-bind="$props"
+      custom
+      v-slot="{ isActive, href, navigate, isExactActive }"
+    >
+      <a
+        v-bind="$attrs"
+        :href="href"
+        @click="customNavigate"
+        :class="[
+          isActive ? activeClass : inactiveClass,
+          isExactActive ? exactActiveClass : exactInactiveClass,
+        ]"
+      >
+        <slot
+          :isExternalLink="isExternalLink"
+          :href="href"
+          :navigate="customNavigate"
+          :isActive="isActive"
+          :isExactActive="isExactActive"
+        />
+      </a>
     </router-link>
+  </span>
 </template>
 
 <script lang="ts">

@@ -12,7 +12,7 @@ const route = useRoute()
 <template>
   <div class="grid min-h-screen place-items-center px-6 py-24 sm:py-32 lg:px-8 text-center">
     <Card variant="base">
-      <CardBody>
+    <CardBody>
         <p class="font-semibold text-primary text-center w-full">{{ route.meta.code || "Undefined Code"}}</p>
         <CardTitle class="text-5xl text-center w-full">
           <p>{{ route.meta.title || "Generic Error Has Occured" }}</p>
@@ -20,7 +20,7 @@ const route = useRoute()
           <p class="mt-6 text-lg font-medium text-pretty sm:text-xl/8 text-center w-full">{{ route.meta.message || "Sorry, something went wrong" }}</p>
 
         <CardActions class="mt-10 flex items-center justify-center gap-x-6">
-          <Button variant="primary" @click = "$router.push('/')">Homepage</Button>
+          <Button variant="primary" @click = "() => $router.push({name:'Dashboard'})">Homepage</Button>
         </CardActions>
 
       </CardBody>

@@ -8,7 +8,7 @@
             </Button>
             <template #popper>
                 <li>
-                    <a v-close-popper>Profile</a>
+                    <a v-close-popper @click="() => $router.push({name:'EditUser', params:{id:auth.user?.id}})">Profile</a>
                 </li>
 
                 <li>
@@ -32,11 +32,12 @@ import { useRouter } from "vue-router";
 import BreadCrumbs from "./BreadCrumbs.vue";
 
 
-const {logout} = useAuthStore()
+const auth = useAuthStore()
 const router = useRouter()
 
+
 function onLogout() {
-    logout().then(()=> router.push({name:"SignIn"}))
+    auth.logout().then(()=> router.push({name:"SignIn"}))
 }
 
 
