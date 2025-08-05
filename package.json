@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
-    "lint": "eslint --ignore-path .gitignore --ext .js,.vue ."
+    "build": "vite build && ts-node build.js",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.vue .",
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",
