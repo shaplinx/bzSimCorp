@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build && ts-node build.js",
-    "lint": "eslint --ignore-path .gitignore --ext .js,.vue .",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.vue ."
   },
   "devDependencies": {
     "autoprefixer": "^10.4.19",

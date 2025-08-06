@@ -7,7 +7,9 @@ use App\Models\Messaging\Message;
 use App\Models\Messaging\Recipient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
 
 class MessagingController extends Controller
 {
@@ -23,7 +25,7 @@ class MessagingController extends Controller
 
         DB::transaction(function () use ($request) {
             /** @var \App\Models\User $user */
-            $user  = auth()->user();
+            $user  = Auth::user();
             $user->sendMessage(
                 recipients: $request->recipients,
                 subject: $request->subject,
@@ -39,7 +41,7 @@ class MessagingController extends Controller
     public function show(Message $message)
     {
         Recipient::where('message_id',$message->id)
-            ->where('recipient_id' , auth()->id())
+            ->where('recipient_id' , Auth::id())
             ->update(["read_at" => Carbon::now()]);
         return $this->sendResponse(__('Fetched Successfully'), $message->load("recipients","sender", "attachments"));
     }
