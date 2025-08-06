@@ -33,9 +33,11 @@
       :total="reactives.total"
       :has-checkbox="true"
     >
-     <template #row-parent="data">
-      <Badge v-if="data.value.parent" class="mr-1" variant="primary">{{ data.value.parent.name }}</Badge>
-     </template>
+      <template #row-parent="data">
+        <Badge v-if="data.value.parent" class="mr-1" variant="primary">{{
+          data.value.parent.name
+        }}</Badge>
+      </template>
       <template #row-actions="data">
         <DropdownMenu v-if="rowActions.length" placement="bottom-end">
           <Button shape="circle" variant="neutral" size="sm">
@@ -44,11 +46,17 @@
           <template #popper="{ hide }">
             <li
               v-for="action in rowActions"
-              @click="() => { hide(); action.action?.(data.value, hide) }"
+              @click="
+                () => {
+                  hide();
+                  action.action?.(data.value, hide);
+                }
+              "
               :key="action.label"
             >
               <a>
-                <FontAwesomeIcon v-if="action.icon" :icon="action.icon" /> {{ action.label }}
+                <FontAwesomeIcon v-if="action.icon" :icon="action.icon" />
+                {{ action.label }}
               </a>
             </li>
           </template>
@@ -84,6 +92,7 @@ const callbacks: IndexCrudCallbacks<App.Models.DocumentsClassification> = {
 
 const config: IndexCrudConfig<any> = {
   resources: useClassificationResources(),
+  enableExport:true,
   createRoute: { name: "CreateClassification" },
   editRoute: { name: "EditClassification" },
   columns: [

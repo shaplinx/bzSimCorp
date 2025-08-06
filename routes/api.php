@@ -38,6 +38,9 @@ Route::prefix("v1")->group(function () {
 
 
         Route::prefix('documents')->group(function () {
+            Route::middleware(EnsureCanExport::class)->get('institutions/export', [InstitutionController::class,'export']);
+            Route::middleware(EnsureCanExport::class)->get('classifications/export', [ClassificationController::class,'export']);
+            Route::middleware(EnsureCanExport::class)->get('letters/export', [LetterController::class,'export']);
             Route::apiResource('institutions', InstitutionController::class);
             Route::apiResource('classifications', ClassificationController::class);
             Route::apiResource('letters', LetterController::class);

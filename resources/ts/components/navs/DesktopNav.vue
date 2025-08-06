@@ -10,7 +10,7 @@
         <div class="flex items-center h-16 justify-center bg-primary">
           <img
             class="h-8"
-            src="https://tailwindui.com/img/logos/mark.svg?color=white"
+            src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=white"
             alt="Your Company"
           />
         </div>

@@ -3,12 +3,13 @@ import { SuccessResponse, useCrud } from "./@hooks/api/useCrud";
 import axios from "@/@hooks/api/useAxios"
 
 
-export const useUserResources = () => useCrud<App.Models.User>({ baseUrl: "user", actions: ["export","index", "create", "delete", "show", "update"] });
+export const useUserResources = () => useCrud<App.Models.User>({ baseUrl: "user", actions: ["export", "index", "create", "delete", "show", "update"] });
 
-export const useInstitutionResources = () => useCrud<App.Models.DocumentsInstitution>({ baseUrl: "documents/institutions" });
-export const useClassificationResources = () => useCrud<App.Models.DocumentsClassification>({ baseUrl: "documents/classifications" });
+export const useInstitutionResources = () => useCrud<App.Models.DocumentsInstitution>({ baseUrl: "documents/institutions", actions: ["export", "index", "create", "delete", "show", "update"] });
+export const useClassificationResources = () => useCrud<App.Models.DocumentsClassification>({ baseUrl: "documents/classifications", actions: ["export", "index", "create", "delete", "show", "update"] });
 export const useLetterResources = () => useCrud<App.Models.DocumentsLetter>({
   baseUrl: "documents/letters",
+  actions: ["export","index", "create", "delete", "show", "update"],
   overrides: {
     create: (config) => {
       return new Promise<AxiosResponse<SuccessResponse<App.Models.DocumentsLetter>>>((reslove, reject) => {

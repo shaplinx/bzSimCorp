@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Documents;
 
+use App\Exports\Documents\LetterExport;
 use App\Http\Controllers\Controller;
 use App\Models\Documents\Letter;
 use App\Http\Requests\Documents\StoreLetterRequest;
@@ -165,5 +166,13 @@ class LetterController extends Controller
         /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
         $storage = Storage::disk('local');
         return $storage->download($letter->file_path);
+    }
+
+     /**
+     * export the specified resource.
+     */
+    public function export()
+    {
+        return (new LetterExport)->download('letters.xlsx');
     }
 }

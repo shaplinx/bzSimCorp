@@ -17,6 +17,8 @@ class EnsureCanExport
      */
     public function handle(Request $request, Closure $next): Response
     {
+        return $next($request);
+
         $key = 'export-limit:' . $request->user()->id;
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
