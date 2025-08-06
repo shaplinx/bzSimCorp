@@ -41,32 +41,12 @@ const routes = [
         children: [
             {
                 path: "dashboard",
-                component: RouterView,
-                redirect: "/dashboard/main",
-
+                component: () => import("@/views/Dashboard/MainDashboard.vue"),
                 name: "Dashboard",
                 meta: {
                     title: 'Dashboard'
                 },
-                children: [
-                    {
-                        path: "main",
-                        component: () => import("@/views/Dashboard/MainDashboard.vue"),
 
-                        name: "MainDashboard",
-                        meta: {
-                            title: 'Main Dashboard'
-                        }
-                    },
-                                        {
-                        path: "documents",
-                        component: () => import("@/views/Dashboard/DocumentDashboard.vue"),
-                        name: "DocumentDashboard",
-                        meta: {
-                            title: 'Documents Dashboard'
-                        }
-                    },
-                ]
             },
             {
                 path: 'users',
@@ -74,7 +54,7 @@ const routes = [
                 component: RouterView,
                 redirect: "/users/index",
                 meta: {
-                    title: 'Tables'
+                    title: 'Users'
                 },
                 children: [
                     {
@@ -110,11 +90,19 @@ const routes = [
                 path: 'documents',
                 name: 'documents',
                 component: RouterView,
-                redirect: "/documents/institutions",
+                redirect: "/documents/index",
                 meta: {
-                    title: 'Tables'
+                    title: 'Documents'
                 },
                 children: [
+                    {
+                        path: "index",
+                        component: () => import("@/views/Dashboard/DocumentDashboard.vue"),
+                        name: "IndexDocument",
+                        meta: {
+                            title: 'Documents Dashboard'
+                        }
+                    },
                     {
                         path: 'institutions',
                         name: 'institutions',
