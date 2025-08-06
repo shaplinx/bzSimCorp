@@ -32,7 +32,6 @@ export const mainSideMenu: Base.Component.Menu.MenuItem[] = [
     id: "documents",
     icon: faFolderOpen,
     label: "Documents",
-    to: { name: "documents" },
     child: [
       {
         id: "institutions",

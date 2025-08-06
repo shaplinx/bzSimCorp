@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Documents;
 
+use App\Exports\Documents\InstitutionExport;
 use App\Models\Documents\Institution;
 use App\Http\Requests\Documents\StoreInstitutionRequest;
 use App\Http\Requests\Documents\UpdateInstitutionRequest;
@@ -60,5 +61,13 @@ class InstitutionController extends Controller
         $institution->delete();
 
         return $this->sendResponse(__('Deleted Successfully'));
+    }
+
+        /**
+     * export the specified resource.
+     */
+    public function export()
+    {
+        return (new InstitutionExport)->download('institution.xlsx');
     }
 }

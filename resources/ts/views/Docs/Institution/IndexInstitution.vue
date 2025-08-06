@@ -78,6 +78,7 @@ const callbacks: IndexCrudCallbacks<App.Models.DocumentsInstitution> = {
 
 const config: IndexCrudConfig<any> = {
     resources: useInstitutionResources(),
+    enableExport:true,
     createRoute: { name: "CreateInstitution" },
     editRoute: { name: "EditInstitution" },
     columns: [

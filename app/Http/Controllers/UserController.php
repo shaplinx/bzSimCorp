@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Requests\IndexRequest;
@@ -85,6 +86,15 @@ class UserController extends Controller
         Gate::authorize('delete', $user);
         $user->delete();
         return $this->sendResponse(__("Deleted Successfully"));
+    }
+
+
+    /**
+     * export the specified resource.
+     */
+    public function export()
+    {
+        return (new UsersExport)->download('users.xlsx');
     }
 
 }

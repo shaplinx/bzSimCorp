@@ -89,6 +89,7 @@ const callbacks: IndexCrudCallbacks<App.Models.DocumentsLetter> = {
 
 const config: IndexCrudConfig<any> = {
   resources: useLetterResources(),
+  enableExport:true,
   createRoute: { name: "CreateLetter" },
   editRoute: { name: "EditLetter" },
   columns: [

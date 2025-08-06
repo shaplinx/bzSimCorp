@@ -79,6 +79,7 @@ const config: IndexCrudConfig<any> = {
     resources: useUserResources(),
     createRoute: {name:"CreateUser"},
     editRoute: {name:"EditUser"},
+    enableExport:true,
     columns: [
         {
             label: "Name",

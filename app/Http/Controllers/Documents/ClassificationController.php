@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Documents;
 
+use App\Exports\Documents\ClassificationExport;
 use App\Http\Controllers\Controller;
 use App\Models\Documents\Classification;
 use App\Http\Requests\Documents\StoreClassificationRequest;
@@ -57,5 +58,13 @@ class ClassificationController extends Controller
         $classification->delete();
 
         return $this->sendResponse(__('Deleted Successfully'));
+    }
+
+    /**
+     * export the specified resource.
+     */
+    public function export()
+    {
+        return (new ClassificationExport)->download('classification.xlsx');
     }
 }

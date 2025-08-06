@@ -1,36 +1,31 @@
 <template>
-  <component :is="element" :key="item.id" :to="item.to" >
-    <div class="flex flex-col items-center align-middle" v-tooltip.right="{
-      content: item.label,
-      distance: 10,
-    }">
-      <div
-        class="btn "
-        :class="[isActive ? 'btn-primary' : '']">
-        <FontAwesomeIcon :icon="item.icon" aria-hidden="true" class="w-5"> </FontAwesomeIcon>
-        <span class="sr-only">{{ item.label }}</span>
+  <div>
+    <component :is="element" :key="item.id" :to="item.to">
+      <div class="flex flex-col items-center align-middle">
+        <div class="btn"  :class="[isActive ? 'btn-primary' : '']">
+          <FontAwesomeIcon :icon="item.icon" aria-hidden="true" class="w-5">
+          </FontAwesomeIcon>
+          <span class="sr-only">{{ item.label }}</span>
+        </div>
       </div>
-    </div>
-
-  </component>
+    </component>
+  </div>
 </template>
 
 <script setup lang="ts">
-import AppLink from './AppLink.vue';
-import { useMenuItem } from "./hooks/navigation"
-import { watch, ref, computed } from "vue"
-
+import AppLink from "./AppLink.vue";
+import { useMenuItem } from "./hooks/navigation";
+import { watch, ref, computed } from "vue";
 
 const props = defineProps<{
-  item: Base.Component.Menu.MenuItem,
-}>()
+  item: Base.Component.Menu.MenuItem;
+}>();
 
-const element = computed(()=> props.item.to ? AppLink : 'div');
+const element = computed(() => (props.item.to ? AppLink : "div"));
 
+const emits = defineEmits(["change:isActive"]);
 
-const emits = defineEmits(['change:isActive'])
-
-const { isActive } = useMenuItem(props.item)
+const { isActive } = useMenuItem(props.item);
 
 watch(
   () => isActive.value,
@@ -41,6 +36,4 @@ watch(
     immediate: true,
   }
 );
-
-
 </script>

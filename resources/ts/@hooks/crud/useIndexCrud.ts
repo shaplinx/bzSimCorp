@@ -8,7 +8,7 @@ import { DropdownOption } from "@/components/dropdowns/dropdown";
 import { ButtonProps } from "@/components/@types/button";
 import { Reactive } from "vue";
 import { CrudResourcesInstance } from "../api/useCrud";
-import { faCaretDown, faPencilAlt, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faFileExcel, faPencilAlt, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useModal } from 'vue-final-modal'
 import DeleteConfirmationModal from "@/components/containers/DeleteConfirmationModal.vue";
 
@@ -57,7 +57,8 @@ export interface IndexCrudConfig<T = any> {
     columns?: Column[]
     primaryKey?: string
     resources: CrudResourcesInstance<T>
-    rowActions?: DropdownOption[]
+    rowActions?: DropdownOption[],
+    enableExport?: Boolean
 }
 
 
@@ -146,6 +147,26 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
 
     const columns: Column[] = [...defaultColumns, ...config.columns ?? []]
 
+    const generateExportButton = (): ButtonProps[] => !config.enableExport ? [] : [
+        {
+            value: "export",
+            label: "Export",
+            variant: "secondary",
+            icon: faFileExcel,
+            on: {
+                click: () => config.resources?.export?.()
+                    .then((url) => {
+                        const link = document.createElement('a');
+                        link.href = url || "#";
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                        setTimeout(() => URL.revokeObjectURL(url!), 1000);
+                    })
+            }
+        }
+    ]
+
     const defaultTitleButtons: ButtonProps[] = config.resets?.includes("titleButtons") ? [] : [
         {
             value: "create",
@@ -156,6 +177,7 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
                 click: () => router.push(config.createRoute ?? "#")
             }
         },
+        ...generateExportButton(),
         {
             value: "actions",
             label: "Actions",
