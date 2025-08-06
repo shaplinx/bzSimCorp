@@ -17,8 +17,6 @@ class EnsureCanExport
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
-
         $key = 'export-limit:' . $request->user()->id;
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
@@ -30,7 +28,7 @@ class EnsureCanExport
                 ['Retry-After' => $retryAfter]
             );
         }
-        RateLimiter::hit($key, 3600); // 1 hour decay
+        RateLimiter::hit($key, 900);
         return $next($request);
     }
 }
