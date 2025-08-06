@@ -6,7 +6,7 @@
         <a v-bind="$attrs" :href="href" @click="customNavigate" :class="[
             isActive ? activeClass : inactiveClass,
             isExactActive ? exactActiveClass : exactInactiveClass,
-        ]">
+        ]" >
             <slot :isExternalLink="isExternalLink" :href="href" :navigate="customNavigate" :isActive="isActive"
                 :isExactActive="isExactActive"> </slot>
         </a>

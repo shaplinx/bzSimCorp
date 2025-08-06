@@ -1,7 +1,7 @@
 import { AxiosResponse, AxiosError, AxiosRequestConfig, Method } from "axios"
 import axios from "./useAxios"
 
-export type Action = "index" | "create" | "update" | "delete" | "show"
+export type Action = "index" | "create" | "update" | "delete" | "show" | "export"
 
 export type CrudConfig = {
     baseUrl: string,
@@ -51,7 +51,9 @@ export type CrudResourcesInstance<T = any> = {
     create?: (config?: AxiosRequestConfig) => Promise<AxiosResponse<SuccessResponse<T>>>;
     update?: (identifier: string | number, config?: AxiosRequestConfig) => Promise<AxiosResponse<SuccessResponse<T>>>;
     delete?: (identifier: string | number, config?: AxiosRequestConfig) => Promise<AxiosResponse<SuccessResponse<T>>>;
-    [key:string] : any
+    export?: (config?: AxiosRequestConfig) => Promise<string | undefined>;
+
+    [key: string]: any
 }
 
 export function useCrud<T = any>(config: CrudConfig): CrudResourcesInstance<T> {
@@ -63,7 +65,9 @@ export function useCrud<T = any>(config: CrudConfig): CrudResourcesInstance<T> {
         show: `${config.baseUrl}/:${primaryKey}`,
         create: config.baseUrl,
         update: `${config.baseUrl}/:${primaryKey}`,
-        delete: `${config.baseUrl}/:${primaryKey}`
+        delete: `${config.baseUrl}/:${primaryKey}`,
+        export: `${config.baseUrl}/export`
+
     }, config.endpoints ?? {})
 
     function generateUrl(action: Action, identifier?: number | string) {
@@ -78,12 +82,14 @@ export function useCrud<T = any>(config: CrudConfig): CrudResourcesInstance<T> {
         show: "get" as Method,
         create: "post" as Method,
         update: "patch" as Method,
-        delete: "delete" as Method
+        delete: "delete" as Method,
+        export: "get" as Method
+
     }, config.methods ?? {})
 
-    const actions = config.actions ?? ["index","create","delete","show","update"]
+    const actions = config.actions ?? ["index", "create", "delete", "show", "update"]
 
-    const resources : CrudResourcesInstance<T> = {}
+    const resources: CrudResourcesInstance<T> = {}
 
     if (actions.includes("index")) {
         resources.index = (config?: AxiosRequestConfig) => {
@@ -155,7 +161,28 @@ export function useCrud<T = any>(config: CrudConfig): CrudResourcesInstance<T> {
         }
     }
 
-    Object.assign(resources, config.overrides?? {})
+    if (actions.includes("export")) {
+        resources.export = ( config?: AxiosRequestConfig) => {
+            return new Promise<string | undefined>((reslove, reject) => {
+                axios({
+                    method: methods["export"],
+                    url: generateUrl("export"),
+                    responseType: 'blob',
+                    ...config
+                })
+                    .then((res) => {
+                        const file = new Blob([res.data], {
+                            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        });
+                        const url = URL.createObjectURL(file);
+                        reslove(url);
+                    })
+                    .catch((err) => reject(err))
+            })
+        }
+    }
+
+    Object.assign(resources, config.overrides ?? {})
 
     return resources
 }

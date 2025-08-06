@@ -3,7 +3,7 @@ import { SuccessResponse, useCrud } from "./@hooks/api/useCrud";
 import axios from "@/@hooks/api/useAxios"
 
 
-export const useUserResources = () => useCrud<App.Models.User>({ baseUrl: "user" });
+export const useUserResources = () => useCrud<App.Models.User>({ baseUrl: "user", actions: ["export","index", "create", "delete", "show", "update"] });
 
 export const useInstitutionResources = () => useCrud<App.Models.DocumentsInstitution>({ baseUrl: "documents/institutions" });
 export const useClassificationResources = () => useCrud<App.Models.DocumentsClassification>({ baseUrl: "documents/classifications" });

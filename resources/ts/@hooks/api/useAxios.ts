@@ -8,9 +8,16 @@ const axiosInstance = axios.create({
     withXSRFToken: true,
     headers: {
         "Content-Type": "application/json",
-      }
+    }
 });
 
+function safeJsonParse(text: string): any | undefined {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
 
 axiosInstance.interceptors.response.use(
     response => {
@@ -18,9 +25,14 @@ axiosInstance.interceptors.response.use(
         toast.success(response.data.message)
         return response
     },
-    error => {
+    async error => {
         const authStore = useAuthStore()
-        toast.error(error.response?.data?.message || "Undefined Error", {
+        let message = error.response?.data?.message || "Undefined Error"
+        if (error.response?.data instanceof Blob) {
+            const text = await error.response.data.text()
+            message = safeJsonParse(text)?.message || message
+        }
+        toast.error(message, {
             toastId: error.response?.status === 401 ? 401 : undefined
         })
         if ((error.lastError === 419) && (error.response?.status === 419)) {
@@ -66,7 +78,7 @@ axiosInstance.interceptors.response.use(
             router.push({ name: "SignIn" })
         }
 
-        
+
         if (error.response?.status === 404) {
             router.push({ name: "404" })
         }

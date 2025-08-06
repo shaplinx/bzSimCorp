@@ -89,20 +89,11 @@ const routes = [
                 path: 'documents',
                 name: 'documents',
                 component: RouterView,
-                redirect: "/documents/index",
+                redirect: "/documents/institutions",
                 meta: {
                     title: 'Tables'
                 },
                 children: [
-                    {
-                        path: 'index',
-                        name: 'IndexUser',
-                        component: () => import("@/views/User/IndexUser.vue"),
-                        meta: {
-                            layout: 'DashboardLayout',
-                            title: 'Users Index'
-                        }
-                    },
                     {
                         path: 'institutions',
                         name: 'institutions',

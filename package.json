@@ -39,7 +39,7 @@
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "flatpickr": "^4.6.13",
-    "floating-vue": "^5.2.2",
+    "floating-vue": "file:dependencies/floating-vue-5.2.2-1.tgz",
     "jsvectormap": "^1.5.3",
     "pinia": "^2.1.7",
     "ts-node": "^10.9.2",

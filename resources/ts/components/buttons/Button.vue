@@ -71,7 +71,7 @@ const handleOnClick = async (e: any) => {
     try {
         await props.onClick(e);
     } catch (error) {
-        throw error;
+        console.error('Click handler failed:', error);
     } finally {
         clickLoading.value = false;
     }

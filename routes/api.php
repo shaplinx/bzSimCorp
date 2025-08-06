@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Documents\InstitutionController;
 use App\Http\Controllers\Documents\ClassificationController;
 use App\Http\Controllers\Documents\LetterController;
+use App\Http\Middleware\EnsureCanExport;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,9 @@ Route::prefix("v1")->group(function () {
         Route::post('auth/revoke-token', [TokenBasedAuth::class, 'revokeToken']);
         Route::get('auth/all-roles', [LadderController::class, "getAllRoles"]);
         Route::get('auth/all-permissions', [LadderController::class, "getAllPermissions"]);
+        Route::middleware(EnsureCanExport::class)->get('user/export', [UserController::class,'export']);
         Route::resource('user', UserController::class);
+
 
         Route::prefix('documents')->group(function () {
             Route::apiResource('institutions', InstitutionController::class);
