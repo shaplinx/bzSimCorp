@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\Messaging\Message;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -46,21 +48,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getAllPermissionsAttribute(){
+    public function getAllPermissionsAttribute()
+    {
         return $this->permissions();
     }
 
-    public function setRoles($newRoles = []) {
+    public function setRoles($newRoles = [])
+    {
         $oldRoles = $this->roles->pluck("role");
-        $newRoles = collect($newRoles)->unique()->each(function($newRole) {
+        $newRoles = collect($newRoles)->unique()->each(function ($newRole) {
             $this->roles()->updateOrCreate(["role" => $newRole]);
         });
         $oldRoles->diff($newRoles)->each(function ($unused) {
             $this->roles()->where(["role" => $unused])->delete();
         });
-
     }
 
+    public function sentMessages() {
+        return $this->hasMany(Message::class,"message_id");
+    }
 
+    public function getSentMessagesCountAttribute() {
+        $this->sentMessages()->count();
+    }
 
 }

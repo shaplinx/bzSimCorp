@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Documents\InstitutionController;
 use App\Http\Controllers\Documents\ClassificationController;
 use App\Http\Controllers\Documents\LetterController;
+use App\Http\Controllers\Messaging\MessageController;
 use App\Http\Middleware\EnsureCanExport;
 
 /*
@@ -45,5 +46,7 @@ Route::prefix("v1")->group(function () {
             Route::apiResource('classifications', ClassificationController::class);
             Route::apiResource('letters', LetterController::class);
         });
+
+        Route::resource('messaging', MessageController::class)->except(['update']);
     });
 });

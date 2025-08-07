@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('messaging_messages', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->unsignedBigInteger('sender_id')->nullable(); // null = system
+            $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->string('subject');
             $table->text('body');
             $table->timestamps();

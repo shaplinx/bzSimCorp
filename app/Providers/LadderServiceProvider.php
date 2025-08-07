@@ -33,10 +33,16 @@ class LadderServiceProvider extends ServiceProvider
             'user:read',
             'user:update',
             'user:delete',
+            'message:read',
+            'message:create',
+            'message:delete',
         ])->description('Administrator users can perform any action to the user.');
 
         Ladder::role('standard', 'Standard', [
             'user:read',
+            'message:read',
+            'message:create',
+            'message:delete',
         ])->description('Standard users have the ability to read user.');
 
     }

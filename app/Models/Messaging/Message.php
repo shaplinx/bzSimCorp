@@ -13,8 +13,12 @@ class Message extends Model
 {
     use HasFactory, HasUuids, Messagable;
     protected $table = "messaging_messages";
+    public $incrementing = false;
+    protected $fillable = ['subject', 'body','sender_id'];
 
-    protected $fillable = ['subject', 'body'];
+    protected $hidden = [
+        'body',
+    ];
 
     public function sender()
     {
@@ -23,7 +27,7 @@ class Message extends Model
 
     public function recipients()
     {
-        return $this->belongsToMany(User::class, 'message_recipients', 'message_id', 'recipient_id')
+        return $this->belongsToMany(User::class, 'messaging_recipients', 'message_id', 'recipient_id')
             ->withPivot('read_at')->withTimestamps();
     }
 
@@ -86,6 +90,6 @@ class Message extends Model
 
     public function setSender(?int $senderId): void
     {
-        $this->sender_id = $senderId; // null = system
+        $this->sender_id = $senderId;
     }
 }
