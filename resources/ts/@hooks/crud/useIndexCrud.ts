@@ -1,6 +1,4 @@
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { computed, ComputedRef, reactive, Ref, toRefs } from "vue";
-import axiosInstance from "../api/useAxios";
+import { computed, ComputedRef, reactive, Ref, toRefs, watch, WritableComputedRef } from "vue";
 import { AxiosError, AxiosResponse } from "axios";
 import type { FormKitSchemaDefinition } from "@formkit/core"
 import { RouteLocationNamedRaw, RouteLocationRaw, Router, useRouter } from "vue-router";
@@ -11,6 +9,7 @@ import { CrudResourcesInstance } from "../api/useCrud";
 import { faCaretDown, faFileExcel, faPencilAlt, faPlus, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { useModal } from 'vue-final-modal'
 import DeleteConfirmationModal from "@/components/containers/DeleteConfirmationModal.vue";
+import { deepMerge } from "../objects/deepMerge";
 
 
 export type FetchParams = {
@@ -19,7 +18,7 @@ export type FetchParams = {
     orderBy: {
         column: string,
         direction: "asc" | "desc"
-    }
+    },
     [key: string]: any
 }
 
@@ -43,7 +42,7 @@ export type IndexCrudConstants<T = any> = {
 
 export interface IndexCrudConfig<T = any> {
     reactives?: {
-        fetchParams?: FetchParams,
+        fetchParams?: Partial<FetchParams>,
         isFetching?: boolean
         rows?: T[]
         total?: number
@@ -91,8 +90,10 @@ export type IndexCrudInstance<T = any> = {
     }>
     computed: {
         titleActions: ComputedRef<DropdownOption[]>,
+        fetchParams: WritableComputedRef<FetchParams>,
     }
-    fetchAll: () => Promise<unknown>,
+    asyncFetchAll: () => Promise<unknown>,
+    fetchAll: () => void,
     deletefunction: (id: any) => Promise<unknown>,
     router: Router,
 }
@@ -264,28 +265,27 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
         resources: config.resources
     }
 
-
-    const reactives = reactive<IndexCrudReactives<T>>(Object.assign({}, {
+    const defaultReactives = {
         fetchParams: {
             page: 1,
             pageSize: 10,
             orderBy: {
                 direction: "asc" as "asc",
-                column: "id"
-            }
+                column: "created_at",
+            },
         },
         total: 0,
         isFetching: false,
         selected: [],
         rows: [],
-    }, config.reactives))
+    }
 
+    const reactives = reactive<IndexCrudReactives<T>>(config.reactives ? deepMerge(defaultReactives, config.reactives) : defaultReactives)
 
-
-    function fetchAll() {
+    function asyncFetchAll() {
         reactives.isFetching = true
         return new Promise((resolve, reject) => {
-            consts.resources.index?.({ params: callbacks?.setFetchParams?.(reactives.fetchParams!) ?? reactives.fetchParams })
+            consts.resources.index?.({ params: callbacks?.setFetchParams?.(instance.computed.fetchParams.value!) ?? instance.computed.fetchParams.value })
                 .then(res => {
                     reactives.rows = res.data.data.data as any[]
                     reactives.total = res.data.data.total
@@ -300,6 +300,10 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
                 .finally(() => reactives.isFetching = false)
 
         })
+    }
+
+    function fetchAll() {
+        asyncFetchAll()
     }
 
     function deletefunction(id: any) {
@@ -371,7 +375,16 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
         consts,
         computed: {
             titleActions: computed(() => [...defaultTitleActions.value, ...titleActions.value]),
+            fetchParams: computed({
+                get: () => reactives.fetchParams,
+                set: (value) => {
+                    const mergedParams = deepMerge<FetchParams>(reactives.fetchParams, value);
+                    reactives.fetchParams = mergedParams;
+                    return mergedParams
+                }
+            })
         },
+        asyncFetchAll,
         fetchAll,
         deletefunction,
         router

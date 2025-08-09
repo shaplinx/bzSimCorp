@@ -10,6 +10,9 @@
                 <li>
                     <a v-close-popper @click="() => $router.push({name:'EditUser', params:{id:auth.user?.id}})">Profile</a>
                 </li>
+                <li>
+                    <a v-close-popper @click="() => $router.push({name:'Messaging'})">Messages</a>
+                </li>
 
                 <li>
                     <a v-close-popper @click="onLogout">Log Out</a>

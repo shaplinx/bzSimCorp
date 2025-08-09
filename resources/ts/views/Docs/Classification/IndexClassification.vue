@@ -29,7 +29,7 @@
       :is-loading="reactives.isFetching"
       :columns="columns"
       :rows="reactives.rows"
-      v-model:settings="reactives.fetchParams"
+      v-model:settings="fetchParams"
       :total="reactives.total"
       :has-checkbox="true"
     >
@@ -107,7 +107,7 @@ const config: IndexCrudConfig<any> = {
 const {
   reactives,
   consts: { filterSchema, titleButtons, columns, rowActions },
-  computed: { titleActions },
+  computed: { titleActions, fetchParams },
   fetchAll
 } = useIndexCrud(config, callbacks)
 

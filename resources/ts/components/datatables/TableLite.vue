@@ -204,8 +204,8 @@
             </div>
         </div>
         <div class="vtl-row" v-else>
-            <div class="vtl-empty-msg col-sm-12 text-center">
-                {{ messages.noDataAvailable }}
+            <div class="vtl-empty-msg col-sm-12 text-center py-8">
+               {{ messages.noDataAvailable }}
             </div>
         </div>
     </Card>
@@ -228,6 +228,7 @@ import SpinnerOverlay from "../loader/SpinnerOverlay.vue";
 import Card from "../cards/Card.vue";
 import CardBody from "../cards/CardBody.vue";
 import { watchDeep } from "@vueuse/core";
+import { faBan } from "@fortawesome/free-solid-svg-icons";
 
 
 interface pageOption {

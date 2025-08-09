@@ -13,7 +13,7 @@
         </Collapse>
 
         <table-lite v-model:selected="reactives.selected" :is-slot-mode="true" :is-loading="reactives.isFetching"
-            :columns="columns" :rows="reactives.rows" v-model:settings="reactives.fetchParams" :total="reactives.total"
+            :columns="columns" :rows="reactives.rows" v-model:settings="fetchParams" :total="reactives.total"
             :has-checkbox="true">
             <template v-slot:column-roles="{ item }">
                 <Badge class="mr-1" variant="primary">{{ item.field }}</Badge>
@@ -111,7 +111,7 @@ const config: IndexCrudConfig<any> = {
 const {
     reactives,
     consts: { filterSchema, titleButtons, columns, rowActions },
-    computed: { titleActions },
+    computed: { titleActions, fetchParams },
     fetchAll
 } = useIndexCrud(config, callbacks)
 

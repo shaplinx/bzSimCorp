@@ -38,6 +38,30 @@ export const useLetterResources = () => useCrud<App.Models.DocumentsLetter>({
   }
 });
 
+export const useMessagingResources = () => useCrud<App.Models.MessagingMessage>({
+  baseUrl: "messages",
+  actions: ["index", "create", "delete", "show"],
+  overrides: {
+    create: (config) => {
+      return new Promise<AxiosResponse<SuccessResponse<App.Models.MessagingMessage>>>((reslove, reject) => {
+        axios.postForm('messages', config?.data)
+          .then((res) => reslove(res))
+          .catch((err) => reject(err))
+      })
+    },
+    download: (identifier: string, config: AxiosRequestConfig) => {
+      return new Promise<string>((reslove, reject) => {
+        axios(`documents/letters/${identifier}/download`, { responseType: 'blob', ...config })
+          .then((res) => {
+            const file = new Blob([res.data], { type: 'application/pdf' });
+            reslove(URL.createObjectURL(file))
+          })
+          .catch((err) => reject(err))
+      })
+    }
+  }
+});
+
 
 
 

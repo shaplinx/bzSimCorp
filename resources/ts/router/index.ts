@@ -49,6 +49,15 @@ const routes = [
 
             },
             {
+                path: "messaging",
+                component: () => import("@/views/Messaging/IndexMessaging.vue"),
+                name: "Messaging",
+                meta: {
+                    title: 'Mesaging App'
+                },
+
+            },
+            {
                 path: 'users',
                 name: 'users',
                 component: RouterView,

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexRequest;
 use App\Models\Messaging\Message;
 use App\Models\Messaging\Recipient;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -33,13 +34,16 @@ class MessageController extends Controller
                         ->orWhere('body', 'like', "%{$search}%");
                 });
             })
-            ->when($request->messageType === "outbox", function ($q) use ($user) {
+            ->when($request->messageType === "outbox", function (Builder $q) use ($user) {
                 $q->where('sender_id', $user->id);
             })
-            ->when($request->messageType === "inbox", function ($q) use ($user) {
+            ->when($request->messageType === "inbox", function (Builder $q) use ($user) {
                 $q->whereHas('recipients', function ($q) use ($user) {
                     $q->where('recipient_id', $user->id);
                 });
+            })
+            ->when($request->orderBy, function (Builder $query, array $orderBy) {
+                $query->orderBy($orderBy['column'],$orderBy['direction']);
             })
             ->paginate($request->pageSize ?? 10);
 

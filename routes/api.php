@@ -47,6 +47,6 @@ Route::prefix("v1")->group(function () {
             Route::apiResource('letters', LetterController::class);
         });
 
-        Route::resource('messaging', MessageController::class)->except(['update']);
+        Route::resource('messages', MessageController::class)->except(['update']);
     });
 });

@@ -52,6 +52,39 @@ declare namespace App.Models {
     letters?: App.Models.DocumentsLetter[]
     parent?: App.Models.DocumentsClassification
   }
+  export interface MessagingMessage {
+    id: string
+    sender_id: number
+    subject: string
+    body: string
+    created_at?: string
+    updated_at?: string
+    recipients_count?: number
+    attachments_count?: number
+    sender?: App.Models.User
+    recipients?: App.Models.User[]
+    attachments?: App.Models.MessagingAttachment[]
+  }
+  export interface MessagingRecipient {
+    id: number
+    message_id: string
+    recipient_id: number
+    read_at?: string
+    created_at?: string
+    updated_at?: string
+    deleted_at?: string
+    message?: App.Models.MessagingMessage
+    recipient?: App.Models.User
+  }
+  export interface MessagingAttachment {
+    id: number
+    message_id: string
+    file_path: string
+    original_name: string
+    created_at?: string
+    updated_at?: string
+    message?: App.Models.MessagingMessage
+  }
   export interface User {
     id: number
     name: string
@@ -62,9 +95,11 @@ declare namespace App.Models {
     created_at?: string
     updated_at?: string
     all_permissions?: any
+    sent_messages_count?: number
     tokens_count?: number
     notifications_count?: number
     roles_count?: number
+    sentMessages?: App.Models.MessagingMessage[]
     tokens?: any[]
     notifications?: any[]
     roles?: any[]
