@@ -5,7 +5,9 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Messaging\Message;
+use App\Models\ShortURL\ShortURL;
 use App\Policies\Messaging\MessagingPolicy;
+use App\Policies\ShortURL\ShortURLPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -17,7 +19,9 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-        Message::class => MessagingPolicy::class
+        Message::class => MessagingPolicy::class,
+        ShortURL::class => ShortURLPolicy::class
+
     ];
 
     /**

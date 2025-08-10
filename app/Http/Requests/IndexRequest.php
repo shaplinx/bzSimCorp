@@ -50,6 +50,7 @@ class IndexRequest extends FormRequest
             "pageSize" => ["nullable", "numeric"],
             "dateAfter" => ["nullable", "date", 'date_format:Y-m-d'],
             "dateBefore" => ["nullable", "date", 'date_format:Y-m-d'],
+            "user" => ["nullable", "exists:users,id"]
 
         ];
     }

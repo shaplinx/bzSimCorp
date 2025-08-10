@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Sanctum\PersonalAccessToken;
 use Ladder\HasRoles;
+use AshAllenDesign\ShortURL\Models\ShortURL;
 
 class User extends Authenticatable
 {
@@ -70,6 +71,20 @@ class User extends Authenticatable
 
     public function getSentMessagesCountAttribute() {
         $this->sentMessages()->count();
+    }
+
+    /**
+     * Get all of the links for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function links()
+    {
+        return $this->hasMany(ShortURL::class, 'user_id', 'id');
+    }
+
+    public function isAdmin() {
+        return $this->hasRole("admin");
     }
 
 }

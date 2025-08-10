@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Sanctum\Sanctum;
+use App\Models\ShortURL\ShortURL;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +23,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
+        Route::bind('shorturl', function (string $value) {
+            return ShortURL::where('url_key', $value)->firstOrFail();
+        });
     }
 }

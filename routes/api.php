@@ -9,6 +9,7 @@ use App\Http\Controllers\Documents\InstitutionController;
 use App\Http\Controllers\Documents\ClassificationController;
 use App\Http\Controllers\Documents\LetterController;
 use App\Http\Controllers\Messaging\MessageController;
+use App\Http\Controllers\ShortUrl\ShortUrlController;
 use App\Http\Middleware\EnsureCanExport;
 
 /*
@@ -48,5 +49,7 @@ Route::prefix("v1")->group(function () {
         });
 
         Route::resource('messages', MessageController::class)->except(['update','delete']);
+        Route::resource('shorturl', ShortUrlController::class);
+        
     });
 });
