@@ -2,7 +2,8 @@ import { format } from 'date-fns';
 //I'm using indonesian as locale
 import { id } from 'date-fns/locale';
 
-export function quickDateFormat(date : number | string | Date) {
+export function quickDateFormat(date? : number | string | Date) {
+    if (!date) return ""
     return format(new Date(date), "eee d MMM yyyy 'pukul' HH.mm", {locale:id})
 }
 

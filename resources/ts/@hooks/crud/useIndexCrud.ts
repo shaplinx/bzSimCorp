@@ -57,7 +57,8 @@ export interface IndexCrudConfig<T = any> {
     primaryKey?: string
     resources: CrudResourcesInstance<T>
     rowActions?: DropdownOption[],
-    enableExport?: Boolean
+    enableExport?: boolean,
+    disableEditing?:boolean,
 }
 
 
@@ -202,8 +203,8 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
 
     }
 
-    const defaultRowActions = config.resets?.includes("rowActions") ? [] : [
-        {
+    function generateEditActionButton() {
+        return  !config.disableEditing ? [{
             label: "Edit",
             icon: faPencilAlt,
             action: (data: any) => {
@@ -217,8 +218,11 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
                         }
                     })
             }
+        }] : []
+    }
 
-        },
+    const defaultRowActions = config.resets?.includes("rowActions") ? [] : [
+       ...generateEditActionButton(),
         {
             label: "Delete",
             icon: faTrashAlt,
@@ -321,14 +325,20 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
 
     const router = useRouter()
 
-    const defaultTitleActions = config.resets?.includes("titleActions") ? { value: [] } : computed(() => {
-        return [
+    function generateEditTitleAction() {
+        return config.disableEditing ? [] : [
             {
                 label: "Edit",
                 icon: faPencilAlt,
                 disabled: instance.reactives.selected.length !== 1,
                 action: () => router.push(!config.editRoute ? '#' : { ...config.editRoute, params: { id: instance.reactives.selected[0] } },)
             },
+        ]
+    }
+
+    const defaultTitleActions = config.resets?.includes("titleActions") ? { value: [] } : computed(() => {
+        return [
+            ...generateEditTitleAction(),
             {
                 label: "Delete",
                 icon: faTrashAlt,

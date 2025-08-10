@@ -65,7 +65,7 @@ class User extends Authenticatable
     }
 
     public function sentMessages() {
-        return $this->hasMany(Message::class,"message_id");
+        return $this->hasMany(Message::class,'sender_id');
     }
 
     public function getSentMessagesCountAttribute() {

@@ -26,7 +26,8 @@ class MessagingPolicy
         if (!$user->hasPermission("message:read")) {
             return Response::deny('You have no permission to read messages.');
         }
-        if ($model->sender_id !== $user->id || !$model->recipients()->where("messaging_recipients.recipient_id", $user->id)->exists()) {
+
+        if (!($model->sender_id === $user->id || $model->recipients()->where("messaging_recipients.recipient_id", $user->id)->exists())) {
             return Response::deny('You have no buisness to read this messages.');
         }
         return Response::allow();

@@ -60,8 +60,6 @@ class MessageController extends Controller
             'body' => 'required|string',
             'recipients' => 'required|array',
             'recipients.*' => 'exists:users,id',
-            'attachments' => 'array|max:5',
-            'attachments.*' => 'file|max:5120',
         ]);
 
         $message = DB::transaction(function () use ($request) {
@@ -77,7 +75,6 @@ class MessageController extends Controller
             ]);
 
             $message->addRecipients($request->recipients);
-            $message->addAttachments($request->attachments);
             return $message;
         });
 
@@ -98,15 +95,15 @@ class MessageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Message $message)
-    {
-        Gate::authorize('delete', $message);
+    // public function destroy(Message $message)
+    // {
+    //     Gate::authorize('delete', $message);
 
-        $message = DB::transaction(function () use ($message) {
-            $message->attachments->each(fn($a) => $a->delete());
-            $message->delete();
-        });
+    //     $message = DB::transaction(function () use ($message) {
+    //         $message->attachments->each(fn($a) => $a->delete());
+    //         $message->delete();
+    //     });
 
-        return $this->sendResponse(__("Deleted Successfully"));
-    }
+    //     return $this->sendResponse(__("Deleted Successfully"));
+    // }
 }

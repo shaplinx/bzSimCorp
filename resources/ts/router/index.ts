@@ -50,11 +50,26 @@ const routes = [
             },
             {
                 path: "messaging",
-                component: () => import("@/views/Messaging/IndexMessaging.vue"),
-                name: "Messaging",
-                meta: {
-                    title: 'Mesaging App'
+                component: RouterView,
+                redirect: "messaging/index",
+                children: [
+                {
+                    path: "index",
+                    component: () => import("@/views/Messaging/IndexMessaging.vue"),
+                    name: "IndexMessaging",
+                    meta: {
+                        title: 'Mesaging App'
+                    }
                 },
+                {
+                    path: "read/:id",
+                    component: () => import("@/views/Messaging/ReadMessage.vue"),
+                    name: "ReadMessage",
+                    meta: {
+                        title: 'Read Message'
+                    }
+                }
+                ]
 
             },
             {
