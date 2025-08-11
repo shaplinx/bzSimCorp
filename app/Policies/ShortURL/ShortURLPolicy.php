@@ -34,9 +34,9 @@ class ShortURLPolicy
     /**
      * Determine whether the url can create models.
      */
-    public function create(ShortURL $model): Response
+    public function create(User $user): Response
     {
-        return $model->hasPermission("url:create")
+        return $user->hasPermission("url:create")
         ? Response::allow()
         : Response::deny('You have no access to create new url.');
     }

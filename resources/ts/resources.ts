@@ -9,7 +9,7 @@ export const useInstitutionResources = () => useCrud<App.Models.DocumentsInstitu
 export const useClassificationResources = () => useCrud<App.Models.DocumentsClassification>({ baseUrl: "documents/classifications", actions: ["export", "index", "create", "delete", "show", "update"] });
 export const useLetterResources = () => useCrud<App.Models.DocumentsLetter>({
   baseUrl: "documents/letters",
-  actions: ["export","index", "create", "delete", "show", "update"],
+  actions: ["export", "index", "create", "delete", "show", "update"],
   overrides: {
     create: (config) => {
       return new Promise<AxiosResponse<SuccessResponse<App.Models.DocumentsLetter>>>((reslove, reject) => {
@@ -43,6 +43,28 @@ export const useMessagingResources = () => useCrud<App.Models.MessagingMessage>(
   actions: ["index", "create", "show"],
 });
 
-
+export const useShortUrlResources = () => useCrud({
+  baseUrl: "shorturl",
+  overrides: {
+    export: (id, config?: AxiosRequestConfig) => {
+      return new Promise<string | undefined>((reslove, reject) => {
+        axios({
+          method: "GET",
+          url: `shorturl/${id}/export`,
+          responseType: 'blob',
+          ...config
+        })
+          .then((res) => {
+            const file = new Blob([res.data], {
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
+            const url = URL.createObjectURL(file);
+            reslove(url);
+          })
+          .catch((err) => reject(err))
+      })
+    }
+  }
+})
 
 

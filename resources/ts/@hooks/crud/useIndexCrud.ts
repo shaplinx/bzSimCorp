@@ -121,14 +121,14 @@ export function useIndexCrud<T>(config: IndexCrudConfig<T>, callbacks?: IndexCru
         },
         {
             $formkit: "date",
-            name: "date_start",
+            name: "dateAfter",
             label: "From Date",
             outerClass: "$reset mb-0 sm:mb-4"
 
         },
         {
             $formkit: "date",
-            name: "date_end",
+            name: "dateBefore",
             label: "To Date",
             outerClass: "$reset mb-0 sm:mb-4"
 

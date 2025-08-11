@@ -42,7 +42,7 @@ function onConfirm() {
 
 <template>
     <VueFinalModal class="flex justify-center items-center px-8" overlay-transition="vfm-fade"
-        content-transition="vfm-fade" content-class="card max-w-xl bg-base-100 text-base-content card-body">
+        content-transition="vfm-fade" content-class="card max-h-[90vh] overflow-y-auto max-w-xl bg-base-100 text-base-content card-body">
         <div class="flex flex-col gap-2"> </div>
         <div class="card-title">
             {{ title }}

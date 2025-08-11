@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ShortUrl;
 
+use App\Exports\ShortURL\ShortURLExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexRequest;
 use Illuminate\Http\Request;
@@ -53,21 +54,21 @@ class ShortUrlController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('store', ShortURL::class);
+        Gate::authorize('create', ShortURL::class);
 
         $request->validate([
             "url" => "required|url",
             "shortKey" => "nullable|string|min:". config('short-url.key_length')  ."|unique:short_urls,url_key",
-            "enableTracking" => "boolean",
-            "activateAt" => "date",
-            "deactivateAt" => "date",
+            "disableTracking" => "boolean",
+            "activateAt" => "nullable|date",
+            "deactivateAt" => "nullable|date",
             "singleUse" => "boolean",
             "forwardQueryParams" => "boolean"
         ]);
 
         $shortURL = DB::transaction(function () use ($request) {
             return ShortUrlBuilder::destinationUrl($request->url)
-                ->beforeCreate(function (ShortURL $model) use ($request): void {
+                ->beforeCreate(function ($model) use ($request): void {
                     $model->user_id = $request->user()->id;
                 })
                 ->when($request->shortKey, fn($q) => $q->urlKey($request->shortKey))
@@ -75,7 +76,7 @@ class ShortUrlController extends Controller
                 ->when($request->singleUse, fn($q) => $q->singleUse())
                 ->when($request->activateAt, fn($q, $v) => $q->activateAt(Carbon::parse($v)))
                 ->when($request->deactivateAt, fn($q, $v) => $q->deactivateAt(Carbon::parse($v)))
-                ->when($request->enableTracking, fn($q) => $q->trackVisits())
+                ->when($request->disableTracking, fn($q, $v) => $q->trackVisits(!$v))
                 ->make();
         });
 
@@ -89,7 +90,7 @@ class ShortUrlController extends Controller
     {
         Gate::authorize('view', $shortUrl);
 
-        return $this->sendResponse(__('Fetched Successfully'), $shortUrl->load(['visits']));
+        return $this->sendResponse(__('Fetched Successfully'), $shortUrl->load(['visits' => fn($q) => $q->limit(100)]));
     }
 
     /**
@@ -107,9 +108,9 @@ class ShortUrlController extends Controller
                 "min:". config('short-url.key_length'),
                 Rule::unique('short_urls', 'url_key')->ignore($shortUrl->id),
             ],
-            "enableTracking" => "boolean",
-            "activateAt" => "date",
-            "deactivateAt" => "date",
+            "disableTracking" => "boolean",
+            "activateAt" => "nullable|date",
+            "deactivateAt" => "nullable|date",
             "singleUse" => "boolean",
             "forwardQueryParams" => "boolean"
         ]);
@@ -122,13 +123,13 @@ class ShortUrlController extends Controller
                 $shortUrl->single_use = $request->boolean('singleUse');
             }
             if ($request->has('activateAt')) {
-                $shortUrl->activated_at = Carbon::parse($request->activateAt);
+                $shortUrl->activated_at =$request->activateAt ? Carbon::parse($request->activateAt) :null;
             }
             if ($request->has('deactivateAt')) {
-                $shortUrl->deactivated_at = Carbon::parse($request->deactivateAt);
+                $shortUrl->deactivated_at = $request->deactivateAt ?  Carbon::parse($request->deactivateAt) :null;
             }
-            if ($request->has('enableTracking')) {
-                $shortUrl->track_visits = $request->boolean('enableTracking');
+            if ($request->has('disableTracking')) {
+                $shortUrl->track_visits = !$request->boolean('disableTracking');
             }
             $shortUrl->destination_url = $request->url;
             $shortUrl->url_key = $request->shortKey;
@@ -149,5 +150,16 @@ class ShortUrlController extends Controller
         Gate::authorize('delete', $shortUrl);
         $shortUrl->delete();
         return $this->sendResponse(__("Deleted Successfully"));
+    }
+
+
+        /**
+     * Display the specified resource.
+     */
+    public function export(ShortURL $shortUrl)
+    {
+        Gate::authorize('view', $shortUrl);
+
+       return (new ShortURLExport($shortUrl))->download('users.xlsx');
     }
 }

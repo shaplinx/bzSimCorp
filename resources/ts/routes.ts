@@ -186,45 +186,95 @@ const Routes: Record<App.Route.Name, App.Route.Link> = {
     },
     methods: ['GET'],
   },
-  'messaging.index': {
-    name: 'messaging.index',
-    path: '/api/v1/messaging',
+  'messages.index': {
+    name: 'messages.index',
+    path: '/api/v1/messages',
     params: undefined,
     methods: ['GET'],
   },
-  'messaging.store': {
-    name: 'messaging.store',
-    path: '/api/v1/messaging',
+  'messages.store': {
+    name: 'messages.store',
+    path: '/api/v1/messages',
     params: undefined,
     methods: ['POST'],
   },
-  'messaging.create': {
-    name: 'messaging.create',
-    path: '/api/v1/messaging/create',
+  'messages.create': {
+    name: 'messages.create',
+    path: '/api/v1/messages/create',
     params: undefined,
     methods: ['GET'],
   },
-  'messaging.show': {
-    name: 'messaging.show',
-    path: '/api/v1/messaging/{messaging}',
+  'messages.show': {
+    name: 'messages.show',
+    path: '/api/v1/messages/{message}',
     params: {
-      messaging: 'string',
+      message: 'string',
     },
     methods: ['GET'],
   },
-  'messaging.destroy': {
-    name: 'messaging.destroy',
-    path: '/api/v1/messaging/{messaging}',
+  'messages.destroy': {
+    name: 'messages.destroy',
+    path: '/api/v1/messages/{message}',
     params: {
-      messaging: 'string',
+      message: 'string',
     },
     methods: ['DELETE'],
   },
-  'messaging.edit': {
-    name: 'messaging.edit',
-    path: '/api/v1/messaging/{messaging}/edit',
+  'messages.edit': {
+    name: 'messages.edit',
+    path: '/api/v1/messages/{message}/edit',
     params: {
-      messaging: 'string',
+      message: 'string',
+    },
+    methods: ['GET'],
+  },
+  'shorturl.index': {
+    name: 'shorturl.index',
+    path: '/api/v1/shorturl',
+    params: undefined,
+    methods: ['GET'],
+  },
+  'shorturl.store': {
+    name: 'shorturl.store',
+    path: '/api/v1/shorturl',
+    params: undefined,
+    methods: ['POST'],
+  },
+  'shorturl.create': {
+    name: 'shorturl.create',
+    path: '/api/v1/shorturl/create',
+    params: undefined,
+    methods: ['GET'],
+  },
+  'shorturl.show': {
+    name: 'shorturl.show',
+    path: '/api/v1/shorturl/{shorturl}',
+    params: {
+      shorturl: 'string',
+    },
+    methods: ['GET'],
+  },
+  'shorturl.update': {
+    name: 'shorturl.update',
+    path: '/api/v1/shorturl/{shorturl}',
+    params: {
+      shorturl: 'string',
+    },
+    methods: ['PUT', 'PATCH'],
+  },
+  'shorturl.destroy': {
+    name: 'shorturl.destroy',
+    path: '/api/v1/shorturl/{shorturl}',
+    params: {
+      shorturl: 'string',
+    },
+    methods: ['DELETE'],
+  },
+  'shorturl.edit': {
+    name: 'shorturl.edit',
+    path: '/api/v1/shorturl/{shorturl}/edit',
+    params: {
+      shorturl: 'string',
     },
     methods: ['GET'],
   },
@@ -281,6 +331,14 @@ const Routes: Record<App.Route.Name, App.Route.Link> = {
     path: '/api/v1/user/{user}/edit',
     params: {
       user: 'string',
+    },
+    methods: ['GET'],
+  },
+  'short-url.invoke': {
+    name: 'short-url.invoke',
+    path: '/go/{shortURLKey}',
+    params: {
+      shortURLKey: 'string',
     },
     methods: ['GET'],
   },

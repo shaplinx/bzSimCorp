@@ -60,10 +60,8 @@ declare namespace App.Models {
     created_at?: string
     updated_at?: string
     recipients_count?: number
-    attachments_count?: number
     sender?: App.Models.User
     recipients?: App.Models.User[]
-    attachments?: App.Models.MessagingAttachment[]
   }
   export interface MessagingRecipient {
     id: number
@@ -76,15 +74,6 @@ declare namespace App.Models {
     message?: App.Models.MessagingMessage
     recipient?: App.Models.User
   }
-  export interface MessagingAttachment {
-    id: number
-    message_id: string
-    file_path: string
-    original_name: string
-    created_at?: string
-    updated_at?: string
-    message?: App.Models.MessagingMessage
-  }
   export interface User {
     id: number
     name: string
@@ -96,10 +85,12 @@ declare namespace App.Models {
     updated_at?: string
     all_permissions?: any
     sent_messages_count?: number
+    links_count?: number
     tokens_count?: number
     notifications_count?: number
     roles_count?: number
     sentMessages?: App.Models.MessagingMessage[]
+    links?: any[]
     tokens?: any[]
     notifications?: any[]
     roles?: any[]

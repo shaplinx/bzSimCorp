@@ -111,6 +111,44 @@ const routes = [
                 ]
             },
             {
+                path: 'shorturl',
+                name: 'shorturl',
+                component: RouterView,
+                redirect: "/shorturl/index",
+                meta: {
+                    title: 'ShortUrls'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'IndexShortUrl',
+                        component: () => import("@/views/ShortUrl/IndexShortUrl.vue"),
+                        meta: {
+                            layout: 'DashboardLayout',
+                            title: 'Short Urls Index'
+                        }
+                    },
+                    {
+                        path: 'create',
+                        name: 'CreateShortUrl',
+                        component: () => import('@/views/ShortUrl/CreateShortUrl.vue'),
+                        meta: {
+                            layout: 'DashboardLayout',
+                            title: 'Create Short Url'
+                        }
+                    },
+                    {
+                        path: 'edit/:id',
+                        name: 'EditShortUrl',
+                        component: () => import('@/views/ShortUrl/EditShortUrl.vue'),
+                        meta: {
+                            layout: 'DashboardLayout',
+                            title: 'Edit Short Url'
+                        }
+                    },
+                ]
+            },
+            {
                 path: 'documents',
                 name: 'documents',
                 component: RouterView,

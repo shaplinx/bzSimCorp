@@ -50,6 +50,8 @@ Route::prefix("v1")->group(function () {
 
         Route::resource('messages', MessageController::class)->except(['update','delete']);
         Route::resource('shorturl', ShortUrlController::class);
+        Route::middleware(EnsureCanExport::class)->get('shorturl/{shorturl}/export', [ShortUrlController::class,'export']);
+
         
     });
 });

@@ -1,4 +1,4 @@
-import { faGaugeHigh, faUsers, faFolderTree, faEnvelope, faFolderOpen, faInstitution, faFolder } from "@fortawesome/free-solid-svg-icons";
+import { faGaugeHigh, faUsers, faFolderTree, faEnvelope, faFolderOpen, faInstitution, faFolder, faLink } from "@fortawesome/free-solid-svg-icons";
 
 export const mainSideMenu: Base.Component.Menu.MenuItem[] = [
     {
@@ -14,7 +14,7 @@ export const mainSideMenu: Base.Component.Menu.MenuItem[] = [
     to: { name: "IndexUser" },
   },
   {
-    id: "documents",
+    id: "document",
     icon: faFolderOpen,
     label: "Documents",
     to:{name:"IndexDocument"},
@@ -39,5 +39,11 @@ export const mainSideMenu: Base.Component.Menu.MenuItem[] = [
       },
 
     ]
+  },
+    {
+    id: "shorturl",
+    icon: faLink,
+    label: "Short Urls",
+    to: { name: "IndexShortUrl" },
   },
 ]
